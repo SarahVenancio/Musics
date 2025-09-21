@@ -69,6 +69,26 @@ body {
     animation: pulse 1.5s infinite;
 }
 
+/* Animações suaves para o modal */
+#nameModal {
+    transition: opacity 0.3s ease;
+}
+
+#nameModal > div {
+    transition: all 0.3s ease;
+}
+
+/* Estilo para o input */
+#playerNameInput::placeholder {
+    color: #9CA3AF;
+}
+
+/* Efeito de foco melhorado */
+#playerNameInput:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.05); }
@@ -102,4 +122,149 @@ body {
 
 .game-transition {
     transition: opacity 0.5s ease-in-out;
+}
+
+/* Novas animações e estilos adicionados */
+.hidden {
+    display: none;
+}
+
+.opacity-0 {
+    opacity: 0;
+}
+
+.opacity-100 {
+    opacity: 1;
+}
+
+.scale-y-0 {
+    transform: scaleY(0);
+}
+
+.scale-y-100 {
+    transform: scaleY(1);
+}
+
+.scale-95 {
+    transform: scale(0.95);
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+.origin-bottom {
+    transform-origin: bottom;
+}
+
+/* Estilos para feedback */
+#feedbackArea {
+    transition: all 0.3s ease;
+}
+
+/* Estilos para ranking */
+#rankingTableBody tr {
+    transition: background-color 0.2s ease;
+}
+
+#rankingTableBody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Estilos para os modais */
+.fixed {
+    position: fixed;
+}
+
+.inset-0 {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.z-50 {
+    z-index: 50;
+}
+
+.bg-black\/70 {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.rounded-xl {
+    border-radius: 0.75rem;
+}
+
+.shadow-2xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Animações específicas para elementos do jogo */
+.song-item, .artist-item {
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+}
+
+/* Melhorias de responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .grid-cols-1 {
+        grid-template-columns: 1fr;
+    }
+    
+    .flex-col {
+        flex-direction: column;
+    }
+    
+    .text-4xl {
+        font-size: 2rem;
+    }
+    
+    .text-5xl {
+        font-size: 2.5rem;
+    }
+}
+
+/* Efeitos de hover melhorados */
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Scroll personalizado */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
 }
