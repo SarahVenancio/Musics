@@ -28,6 +28,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const backToMenuBtn = document.getElementById('backToMenuBtn');
     const clearRankingBtn = document.getElementById('clearRankingBtn');
 
+    // Elementos do modal de nome
+    const nameModal = document.getElementById('nameModal');
+    const playerNameInput = document.getElementById('playerNameInput');
+    const submitNameBtn = document.getElementById('submitNameBtn');
+    const cancelNameBtn = document.getElementById('cancelNameBtn');
+    const finalScoreElement = document.getElementById('finalScore');
+    const finalLevelElement = document.getElementById('finalLevel');
+
     // Estado do Jogo
     let score = 0;
     let highScore = localStorage.getItem('highScore') || 0;
@@ -40,9 +48,19 @@ document.addEventListener('DOMContentLoaded', function() {
     let selectedGenres = ['all'];
     let gameOver = false;
     let totalPairs;
+    let isNewGameSession = true;
+    let currentScoreToSave = 0;
 
-    // Dados das músicas
+    // Tradução dos nomes dos níveis
+    const levelNames = {
+        easy: "Fácil",
+        medium: "Médio",
+        hard: "Difícil"
+    };
+
+    // Dados das músicas (você pode adicionar depois)
     const musicData = [
+        {id: 1, song: "Diva", artist: "Beyoncé", genre: "Pop", preview: ""},
         {id: 2, song: "Shape of You", artist: "Ed Sheeran", genre: "Pop", preview: ""},
         {id: 3, song: "Bad Guy", artist: "Billie Eilish", genre: "Pop", preview: ""},
         {id: 4, song: "Levitating", artist: "Dua Lipa", genre: "Pop", preview: ""},
@@ -50,11 +68,11 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 6, song: "Rolling in the Deep", artist: "Adele", genre: "Pop", preview: ""},
         {id: 7, song: "Shallow", artist: "Lady Gaga & Bradley Cooper", genre: "Pop", preview: ""},
         {id: 8, song: "Don't Start Now", artist: "Dua Lipa", genre: "Pop", preview: ""},
-        {id: 9, song: "Watermelon Sugar", artist: "Harry Styles", genre: "Pop", preview: ""},
+        {id: 9, song: "Baby One More Time", artist: "Britney Spears", genre: "Pop", preview: ""},
         {id: 10, song: "Dance Monkey", artist: "Tones and I", genre: "Pop", preview: ""},
         {id: 11, song: "Believer", artist: "Imagine Dragons", genre: "Pop", preview: ""},
         {id: 12, song: "Smooth Criminal", artist: "Michael Jackson", genre: "Pop", preview: ""},
-        {id: 13, song: "Let It Go", artist: "Idina Menzel", genre: "Pop", preview: ""},
+        {id: 13, song: "The Winner Takes It All", artist: "ABBA", genre: "Pop", preview: ""},
         {id: 14, song: "Havana", artist: "Camila Cabello", genre: "Pop", preview: ""},
         {id: 15, song: "Senorita", artist: "Shawn Mendes & Camila Cabello", genre: "Pop", preview: ""},
         {id: 16, song: "Someone Like You", artist: "Adele", genre: "Pop", preview: ""},
@@ -67,6 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 23, song: "Shake It Off", artist: "Taylor Swift", genre: "Pop", preview: ""},
         {id: 24, song: "Bad Romance", artist: "Lady Gaga", genre: "Pop", preview: ""},
         {id: 25, song: "Clocks", artist: "Coldplay", genre: "Pop", preview: ""},
+
         {id: 26, song: "Bohemian Rhapsody", artist: "Queen", genre: "Rock", preview: ""},
         {id: 27, song: "Smells Like Teen Spirit", artist: "Nirvana", genre: "Rock", preview: ""},
         {id: 28, song: "Hotel California", artist: "Eagles", genre: "Rock", preview: ""},
@@ -92,7 +111,8 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 48, song: "Stairway to Heaven", artist: "Led Zeppelin", genre: "Rock", preview: ""},
         {id: 49, song: "Come Together", artist: "The Beatles", genre: "Rock", preview: ""},
         {id: 50, song: "Another Brick in the Wall", artist: "Pink Floyd", genre: "Rock", preview: ""},
-        {id: 51, song: "Lose Yourself", artist: "Eminem", genre: "Hip Hop", preview: ""},
+        
+	      {id: 51, song: "Lose Yourself", artist: "Eminem", genre: "Hip Hop", preview: ""},
         {id: 52, song: "Sicko Mode", artist: "Travis Scott", genre: "Hip Hop", preview: ""},
         {id: 53, song: "HUMBLE.", artist: "Kendrick Lamar", genre: "Hip Hop", preview: ""},
         {id: 54, song: "God's Plan", artist: "Drake", genre: "Hip Hop", preview: ""},
@@ -117,6 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 73, song: "Hustlin'", artist: "Rick Ross", genre: "Hip Hop", preview: ""},
         {id: 74, song: "Goosebumps", artist: "Travis Scott", genre: "Hip Hop", preview: ""},
         {id: 75, song: "Bodak Yellow", artist: "Cardi B", genre: "Hip Hop", preview: ""},
+
         {id: 76, song: "Evidências", artist: "Chitãozinho & Xororó", genre: "Sertanejo", preview: ""},
         {id: 77, song: "Fio de Cabelo", artist: "Chico Rey & Paraná", genre: "Sertanejo", preview: ""},
         {id: 78, song: "Ai Se Eu Te Pego", artist: "Michel Teló", genre: "Sertanejo", preview: ""},
@@ -142,6 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 98, song: "Amor Falso", artist: "Aldair Playboy", genre: "Sertanejo", preview: ""},
         {id: 99, song: "Lindo Não É", artist: "Henrique & Juliano", genre: "Sertanejo", preview: ""},
         {id: 100, song: "Vidinha", artist: "Zezé Di Camargo & Luciano", genre: "Sertanejo", preview: ""},
+
         {id: 101, song: "Wake Me Up", artist: "Avicii", genre: "Eletrônica", preview: ""},
         {id: 102, song: "Animals", artist: "Martin Garrix", genre: "Eletrônica", preview: ""},
         {id: 103, song: "Titanium", artist: "David Guetta ft. Sia", genre: "Eletrônica", preview: ""},
@@ -167,31 +189,33 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 123, song: "Reload", artist: "Sebastian Ingrosso & Tommy Trash", genre: "Eletrônica", preview: ""},
         {id: 124, song: "Greyhound", artist: "Swedish House Mafia", genre: "Eletrônica", preview: ""},
         {id: 125, song: "Adagio for Strings", artist: "Tiesto", genre: "Eletrônica", preview: ""},
+
         {id: 126, song: "Águas de Março", artist: "Tom Jobim & Elis Regina", genre: "MPB", preview: ""},
         {id: 127, song: "Garota de Ipanema", artist: "Tom Jobim & Vinícius de Moraes", genre: "MPB", preview: ""},
         {id: 128, song: "Tocando em Frente", artist: "Almir Sater", genre: "MPB", preview: ""},
         {id: 129, song: "O Leãozinho", artist: "Caetano Veloso", genre: "MPB", preview: ""},
-        {id: 130, song: "Sampa", artist: "Caetano Veloso", genre: "MPB", preview: ""},
-        {id: 131, song: "Paisagem da Janela", artist: "Lô Borges", genre: "MPB", preview: ""},
+        {id: 130, song: "Por Onde Andei", artist: "Nando Reis", genre: "MPB", preview: ""},
+        {id: 131, song: "Homem Com H", artist: "Ney Matogrosso", genre: "MPB", preview: ""},
         {id: 132, song: "Romaria", artist: "Renato Teixeira", genre: "MPB", preview: ""},
         {id: 133, song: "Construção", artist: "Chico Buarque", genre: "MPB", preview: ""},
         {id: 134, song: "Apesar de Você", artist: "Chico Buarque", genre: "MPB", preview: ""},
-        {id: 135, song: "Cais", artist: "Milton Nascimento", genre: "MPB", preview: ""},
+        {id: 135, song: "Do Seu Lado", artist: "Jota Quest", genre: "MPB", preview: ""},
         {id: 136, song: "Travessia", artist: "Milton Nascimento", genre: "MPB", preview: ""},
         {id: 137, song: "Naquela Estação", artist: "Marisa Monte", genre: "MPB", preview: ""},
         {id: 138, song: "Ainda Bem", artist: "Marisa Monte", genre: "MPB", preview: ""},
-        {id: 139, song: "Velha Infância", artist: "Tribalistas", genre: "MPB", preview: ""},
+        {id: 139, song: "É Você", artist: "Tribalistas", genre: "MPB", preview: ""},
         {id: 140, song: "Já Sei Namorar", artist: "Tribalistas", genre: "MPB", preview: ""},
         {id: 141, song: "Você é Linda", artist: "Caetano Veloso", genre: "MPB", preview: ""},
         {id: 142, song: "Coração Vagabundo", artist: "Caetano Veloso", genre: "MPB", preview: ""},
-        {id: 143, song: "Baby", artist: "Gal Costa", genre: "MPB", preview: ""},
+        {id: 143, song: "Palavras no Corpo", artist: "Gal Costa", genre: "MPB", preview: ""},
         {id: 144, song: "Meu Nome é Gal", artist: "Gal Costa", genre: "MPB", preview: ""},
-        {id: 145, song: "O Mundo é um Moinho", artist: "Cartola", genre: "MPB", preview: ""},
+        {id: 145, song: "Feliz, Alegre e Forte", artist: "Marisa Monte", genre: "MPB", preview: ""},
         {id: 146, song: "Asa Branca", artist: "Luiz Gonzaga", genre: "MPB", preview: ""},
         {id: 147, song: "Xote das Meninas", artist: "Luiz Gonzaga", genre: "MPB", preview: ""},
-        {id: 148, song: "Festa", artist: "Maria Rita", genre: "MPB", preview: ""},
-        {id: 149, song: "A Festa", artist: "Maria Bethânia", genre: "MPB", preview: ""},
-        {id: 150, song: "O Leão", artist: "Gilberto Gil", genre: "MPB", preview: ""},
+        {id: 148, song: "Não Deixe O Samba Morrer", artist: "Alcione", genre: "MPB", preview: ""},
+        {id: 149, song: "Tiro Ao Álvaro", artist: "Elis Regina", genre: "MPB", preview: ""},
+        {id: 150, song: "Ainda Gosto Dela", artist: "Skank", genre: "MPB", preview: ""},
+
         {id: 151, song: "Blame It", artist: "Jamie Foxx ft. T-Pain", genre: "R&B", preview: ""},
         {id: 152, song: "We Belong Together", artist: "Mariah Carey", genre: "R&B", preview: ""},
         {id: 153, song: "No Scrubs", artist: "TLC", genre: "R&B", preview: ""},
@@ -217,6 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 173, song: "Say So", artist: "Doja Cat", genre: "R&B", preview: ""},
         {id: 174, song: "Best Part", artist: "Daniel Caesar ft. H.E.R.", genre: "R&B", preview: ""},
         {id: 175, song: "Blinding Lights", artist: "The Weeknd", genre: "R&B", preview: ""},
+
         {id: 176, song: "No Woman No Cry", artist: "Bob Marley", genre: "Reggae", preview: ""},
         {id: 177, song: "One Love", artist: "Bob Marley", genre: "Reggae", preview: ""},
         {id: 178, song: "Red Red Wine", artist: "UB40", genre: "Reggae", preview: ""},
@@ -242,6 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 198, song: "Rivers of Babylon", artist: "Boney M.", genre: "Reggae", preview: ""},
         {id: 199, song: "Waiting in Vain", artist: "Bob Marley", genre: "Reggae", preview: ""},
         {id: 200, song: "Natural Mystic", artist: "Bob Marley", genre: "Reggae", preview: ""},
+
         {id: 201, song: "Despacito", artist: "Luis Fonsi ft. Daddy Yankee", genre: "Latino", preview: ""},
         {id: 202, song: "Bailando", artist: "Enrique Iglesias", genre: "Latino", preview: ""},
         {id: 203, song: "Vivir Mi Vida", artist: "Marc Anthony", genre: "Latino", preview: ""},
@@ -250,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 206, song: "Mi Gente", artist: "J Balvin & Willy William", genre: "Latino", preview: ""},
         {id: 207, song: "Felices los 4", artist: "Maluma", genre: "Latino", preview: ""},
         {id: 208, song: "Hips Don't Lie", artist: "Shakira ft. Wyclef Jean", genre: "Latino", preview: ""},
-        {id: 209, song: "Propuesta Indecente", artist: "Romeo Santos", genre: "Latino", preview: ""},
+        {id: 209, song: "DeBÍ TiRAR MáS FOToS", artist: "Bad Bunny", genre: "Latino", preview: ""},
         {id: 210, song: "Chantaje", artist: "Shakira ft. Maluma", genre: "Latino", preview: ""},
         {id: 211, song: "Súbeme la Radio", artist: "Enrique Iglesias", genre: "Latino", preview: ""},
         {id: 212, song: "El Perdón", artist: "Nicky Jam & Enrique Iglesias", genre: "Latino", preview: ""},
@@ -267,31 +293,58 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 223, song: "Me Gusta", artist: "Anitta ft. Cardi B & Myke Towers", genre: "Latino", preview: ""},
         {id: 224, song: "Criminal", artist: "Natti Natasha & Ozuna", genre: "Latino", preview: ""},
         {id: 225, song: "Reggaetón Lento", artist: "CNCO", genre: "Latino", preview: ""},
+
         {id: 226, song: "Defying Gravity", artist: "Wicked Cast", genre: "Musicais", preview: ""},
-        {id: 227, song: "Let It Go", artist: "Frozen Cast", genre: "Musicais", preview: ""},
-        {id: 228, song: "Do-Re-Mi", artist: "The Sound of Music Cast", genre: "Musicais", preview: ""},
+        {id: 227, song: "Lady Marmalade", artist: "Moulin Rouge Cast", genre: "Musicais", preview: ""},
+        {id: 228, song: "From Now On", artist: "The Greatest Showman Cast", genre: "Musicais", preview: ""},
         {id: 229, song: "Seasons of Love", artist: "Rent Cast", genre: "Musicais", preview: ""},
         {id: 230, song: "All That Jazz", artist: "Chicago Cast", genre: "Musicais", preview: ""},
-        {id: 231, song: "Memory", artist: "Cats Cast", genre: "Musicais", preview: ""},
-        {id: 232, song: "One Day More", artist: "Les Misérables Cast", genre: "Musicais", preview: ""},
+        {id: 231, song: "Hopelessly Devoted To You", artist: "Grease Cast", genre: "Musicais", preview: ""},
+        {id: 232, song: "City Of Stars", artist: "La La Land Cast", genre: "Musicais", preview: ""},
         {id: 233, song: "Tomorrow", artist: "Annie Cast", genre: "Musicais", preview: ""},
         {id: 234, song: "I Dreamed a Dream", artist: "Les Misérables Cast", genre: "Musicais", preview: ""},
         {id: 235, song: "Supercalifragilisticexpialidocious", artist: "Mary Poppins Cast", genre: "Musicais", preview: ""},
-        {id: 236, song: "Circle of Life", artist: "The Lion King Cast", genre: "Musicais", preview: ""},
-        {id: 237, song: "You Can't Stop the Beat", artist: "Hairspray Cast", genre: "Musicais", preview: ""},
+        {id: 236, song: "Does Your Mother Know", artist: "Mamma Mia Cast", genre: "Musicais", preview: ""},
+        {id: 237, song: "Say My Name", artist: "Beetlejuice Cast", genre: "Musicais", preview: ""},
         {id: 238, song: "Popular", artist: "Wicked Cast", genre: "Musicais", preview: ""},
         {id: 239, song: "Good Morning Baltimore", artist: "Hairspray Cast", genre: "Musicais", preview: ""},
         {id: 240, song: "Santa Fe", artist: "Newsies Cast", genre: "Musicais", preview: ""},
-        {id: 241, song: "Aquarius/Let the Sunshine In", artist: "Hair Cast", genre: "Musicais", preview: ""},
+        {id: 241, song: "Seventeen", artist: "Heathers Cast", genre: "Musicais", preview: ""},
         {id: 242, song: "Somewhere", artist: "West Side Story Cast", genre: "Musicais", preview: ""},
-        {id: 243, song: "America", artist: "West Side Story Cast", genre: "Musicais", preview: ""},
-        {id: 244, song: "Tonight", artist: "West Side Story Cast", genre: "Musicais", preview: ""},
-        {id: 245, song: "I Feel Pretty", artist: "West Side Story Cast", genre: "Musicais", preview: ""},
-        {id: 246, song: "Climb Ev'ry Mountain", artist: "The Sound of Music Cast", genre: "Musicais", preview: ""},
-        {id: 247, song: "If I Were a Rich Man", artist: "Fiddler on the Roof Cast", genre: "Musicais", preview: ""},
-        {id: 248, song: "Tradition", artist: "Fiddler on the Roof Cast", genre: "Musicais", preview: ""},
-        {id: 249, song: "Do You Hear the People Sing?", artist: "Les Misérables Cast", genre: "Musicais", preview: ""},
-        {id: 250, song: "One", artist: "A Chorus Line Cast", genre: "Musicais", preview: ""},
+        {id: 243, song: "Revolting Children", artist: "Matilda Cast", genre: "Musicais", preview: ""},
+        {id: 244, song: "I'm Not That Girl", artist: "Wicked Cast", genre: "Musicais", preview: ""},
+        {id: 245, song: "For Good", artist: "Wicked Cast", genre: "Musicais", preview: ""},
+        {id: 246, song: "The Room Where It Happens", artist: "Hamilton Cast", genre: "Musicais", preview: ""},
+        {id: 247, song: "There! Right There!", artist: "Legally Blonde Cast", genre: "Musicais", preview: ""},
+        {id: 248, song: "Wavig Through A Window", artist: "Dear Evan Hansen Cast", genre: "Musicais", preview: ""},
+        {id: 249, song: "Agony", artist: "Into The Woods Cast", genre: "Musicais", preview: ""},
+        {id: 250, song: "No One Is Alone", artist: "Into The Woods Cast", genre: "Musicais", preview: ""},
+
+      	{id: 251, song: "Ciclo Sem Fim", artist: "O Rei Leão", genre: "Disney", preview: ""},
+        {id: 252, song: "Vejo Enfim A Luz Brihar", artist: "Enrolados", genre: "Disney", preview: ""},
+        {id: 253, song: "Um Mundo Ideal", artist: "Aladdin", genre: "Disney", preview: ""},
+        {id: 254, song: "O Céu Eu Vou Tocar", artist: "Valente", genre: "Disney", preview: ""},
+        {id: 255, song: "Aqui No Mar", artist: "A Pequena Sereia", genre: "Disney", preview: ""},
+        {id: 256, song: "Quase Lá", artist: "A Princesa e o Sapo", genre: "Disney", preview: ""},
+         {id: 257, song: "Space Between", artist: "Descendentes 2", genre: "Disney", preview: ""},
+        {id: 258, song: "Did I Mention", artist: "Descendentes", genre: "Disney", preview: ""},
+        {id: 259, song: "Se Encontrar", artist: "Frozen 2", genre: "Disney", preview: ""},
+        {id: 260, song: "Sentimentos São", artist: "A Bela e a Fera", genre: "Disney", preview: ""},
+        {id: 261, song: "Homem Ser", artist: "Mulan", genre: "Disney", preview: ""},
+        {id: 262, song: "No Meu Coração Você Vai Sempre Estar", artist: "Tarzan", genre: "Disney", preview: ""},
+        {id: 263, song: "Por Uma Vez Na Eternidade", artist: "Frozen", genre: "Disney", preview: ""},
+        {id: 264, song: "Como Ela Sabe Que A Ama", artist: "Encantada", genre: "Disney", preview: ""},
+        {id: 265, song: "Seu Lugar", artist: "Moana", genre: "Disney", preview: ""},
+        {id: 266, song: "Não Falamos Do Bruno", artist: "Encanto", genre: "Disney", preview: ""},
+        {id: 267, song: "This Is Me", artist: "Camp Rock", genre: "Disney", preview: ""},
+        {id: 268, song: "A Divisão", artist: "Tinker Bell", genre: "Disney", preview: ""},
+        {id: 269, song: "Era Uma Vez No Sonho", artist: "A Bela Adormecida", genre: "Disney", preview: ""},
+        {id: 270, song: "Lembre De Mim", artist: "Viva - A Vida É Uma Festa", genre: "Disney", preview: ""},
+        {id: 271, song: "Sua Mãe Sabe Mais", artist: "Enrolados", genre: "Disney", preview: ""},
+        {id: 272, song: "De Zero a Herói", artist: "Hércules", genre: "Disney", preview: ""},
+        {id: 273, song: "Amigos Do Outro Lado", artist: "A Princesa e o Sapo", genre: "Disney", preview: ""},
+        {id: 274, song: "Se Preparem", artist: "O Rei Leão", genre: "Disney", preview: ""},
+        {id: 275, song: "Dos Oruguitas", artist: "Encanto", genre: "Disney", preview: ""},
     ];
 
     const levelConfig = {
@@ -336,6 +389,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Funções para controlar o modal de nome
+    function showNameModal(scoreToSave, level) {
+        currentScoreToSave = scoreToSave;
+        finalScoreElement.textContent = scoreToSave;
+        finalLevelElement.textContent = levelNames[level];
+        playerNameInput.value = '';
+        
+        nameModal.classList.remove('hidden');
+        setTimeout(() => {
+            nameModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+            playerNameInput.focus();
+        }, 10);
+    }
+
+    function hideNameModal() {
+        const modalContent = nameModal.querySelector('div');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            nameModal.classList.add('hidden');
+        }, 300);
+    }
+
     // Lógica do jogo
     function resetGame() {
         gameOver = false;
@@ -363,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const filteredData = musicData.filter(item => selectedGenres.includes('all') || selectedGenres.includes(item.genre));
         const selectedData = shuffleArray([...filteredData]).slice(0, levelConfig[currentLevel].count);
         if (selectedData.length === 0) {
-            alert('Nenhuma música encontrada para os gêneros selecionados. Por favor, escolha outros gêneros.');
+            showCustomAlert('Nenhuma música encontrada para os gêneros selecionados. Por favor, escolha outros gêneros.');
             showElement(levelSelection);
             hideElement(gameArea);
             return;
@@ -418,8 +493,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        const finalScore = calculateScore(correctCount);
-        score += finalScore;
+        const roundScore = calculateScore(correctCount);
+        
+        if (isNewGameSession) {
+            score = roundScore;
+            isNewGameSession = false;
+        } else {
+            score += roundScore;
+        }
+        
         scoreElement.textContent = score;
 
         if (score > highScore) {
@@ -429,17 +511,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (correctCount === totalPairs) {
-            showFeedback('Parabéns! Todas as respostas estão corretas! 🎉', 'bg-green-600/70');
+            showFeedback(`Parabéns! +${roundScore} pontos! Total: ${score} 🎉`, 'bg-green-600/70');
             nextGameBtn.classList.remove('hidden');
             checkBtn.classList.add('hidden');
             tryAgainBtn.classList.add('hidden');
         } else {
-            showFeedback(`Você acertou ${correctCount} de ${totalPairs} músicas.`, 'bg-blue-600/70');
+            showFeedback(`Você acertou ${correctCount} de ${totalPairs}. +${roundScore} pontos! Total: ${score}`, 'bg-blue-600/70');
             tryAgainBtn.classList.remove('hidden');
             checkBtn.classList.add('hidden');
             nextGameBtn.classList.add('hidden');
-
-            // Salva a pontuação apenas se a pessoa errou
             saveScoreToRanking(score, currentLevel);
         }
     }
@@ -471,28 +551,33 @@ document.addEventListener('DOMContentLoaded', function() {
         startCountdown();
     }
 
-    // Gerenciamento de Ranking (NOVO)
+    // Gerenciamento de Ranking
     function getRanking() {
         const ranking = localStorage.getItem('ranking');
         return ranking ? JSON.parse(ranking) : [];
     }
 
-    function saveScoreToRanking(score, level) {
+    function saveScoreToRanking(scoreToSave, level) {
+        showNameModal(scoreToSave, level);
+    }
+
+    function savePlayerScoreToRanking(playerName, scoreToSave, level) {
         const ranking = getRanking();
-        const playerName = prompt("Você errou algumas músicas. Qual é o seu nome para o ranking?");
-        if (playerName) {
-            ranking.push({
-                name: playerName,
-                score: score,
-                level: level
-            });
-            ranking.sort((a, b) => b.score - a.score);
-            // Limita o ranking a 10 entradas
-            if (ranking.length > 10) {
-                ranking.pop();
-            }
-            localStorage.setItem('ranking', JSON.stringify(ranking));
+        ranking.push({
+            name: playerName,
+            score: scoreToSave,
+            level: levelNames[level]
+        });
+        ranking.sort((a, b) => b.score - a.score);
+        if (ranking.length > 10) {
+            ranking.pop();
         }
+        localStorage.setItem('ranking', JSON.stringify(ranking));
+        displayRanking();
+        
+        isNewGameSession = true;
+        score = 0;
+        scoreElement.textContent = score;
     }
 
     function displayRanking() {
@@ -521,7 +606,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function playPreview(previewUrl) {
         if (!previewUrl) {
-            alert('Pré-visualização de áudio não disponível para esta música.');
+            showCustomAlert('Pré-visualização de áudio não disponível para esta música.');
             return;
         }
         if (currentAudio) {
@@ -531,6 +616,26 @@ document.addEventListener('DOMContentLoaded', function() {
         currentAudio = new Audio(previewUrl);
         currentAudio.volume = 0.5;
         currentAudio.play();
+    }
+
+    function showCustomAlert(message) {
+        const alertModal = document.createElement('div');
+        alertModal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-50';
+        alertModal.innerHTML = `
+            <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 p-6 shadow-2xl">
+                <h2 class="text-xl font-bold mb-4 text-yellow-300">Aviso</h2>
+                <p class="mb-6">${message}</p>
+                <button id="closeAlert" class="w-full bg-purple-600 hover:bg-purple-700 py-2 rounded-lg font-medium transition-colors">
+                    OK
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(alertModal);
+        
+        document.getElementById('closeAlert').addEventListener('click', () => {
+            document.body.removeChild(alertModal);
+        });
     }
 
     // Funções utilitárias
@@ -622,7 +727,6 @@ document.addEventListener('DOMContentLoaded', function() {
         li.appendChild(contentDiv);
         li.appendChild(playButton);
 
-        // Event listeners de arrastar
         li.addEventListener('dragstart', (e) => {
             e.dataTransfer.setData('text/plain', item.song);
             li.classList.add('dragging');
@@ -640,7 +744,6 @@ document.addEventListener('DOMContentLoaded', function() {
         li.dataset.artist = artist;
         li.textContent = artist;
 
-        // Event listeners de soltar
         li.addEventListener('dragover', (e) => {
             e.preventDefault();
             li.classList.add('drag-over');
@@ -665,7 +768,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedSong = document.querySelector('.song-item.bg-yellow-500');
         const selectedArtist = document.querySelector('.artist-item.bg-yellow-500');
 
-        if (this.dataset.song) { // Clicou em uma música
+        if (this.dataset.song) {
             if (this.classList.contains('bg-yellow-500')) {
                 this.classList.remove('bg-yellow-500', 'text-gray-900');
             } else {
@@ -675,7 +778,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (selectedArtist) {
                 makeConnection(this, selectedArtist);
             }
-        } else if (this.dataset.artist) { // Clicou em um cantor
+        } else if (this.dataset.artist) {
             if (this.classList.contains('bg-yellow-500')) {
                 this.classList.remove('bg-yellow-500', 'text-gray-900');
             } else {
@@ -692,7 +795,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const song = songElement.dataset.song;
         const artist = artistElement.dataset.artist;
 
-        // Restaura o item do cantor anterior, se houver
         if (userAnswers[song]) {
             const oldArtistElement = document.querySelector(`[data-artist="${userAnswers[song]}"]`);
             if (oldArtistElement) {
@@ -726,6 +828,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(startNewGame, 500);
             });
         });
+
         backToLevels.addEventListener('click', function() {
             hideElement(gameArea, () => showElement(levelSelection));
             stopCountdown();
@@ -734,9 +837,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentAudio = null;
             }
         });
+
         nextGameBtn.addEventListener('click', startNewGame);
         checkBtn.addEventListener('click', checkAnswers);
         tryAgainBtn.addEventListener('click', resetIncorrectAnswers);
+
         helpBtn.addEventListener('click', () => {
             const helpModalContent = helpModal.querySelector('div');
             helpModal.classList.remove('hidden');
@@ -744,6 +849,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 helpModalContent.classList.remove('scale-95', 'opacity-0');
             }, 10);
         });
+
         closeHelp.addEventListener('click', () => {
             const helpModalContent = helpModal.querySelector('div');
             helpModalContent.classList.add('scale-95', 'opacity-0');
@@ -752,18 +858,69 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 300);
         });
 
-        // NOVO: Eventos para a seção de ranking
         showRankingBtn.addEventListener('click', () => {
             hideElement(levelSelection, () => showElement(rankingArea));
             displayRanking();
         });
+
         backToMenuBtn.addEventListener('click', () => {
             hideElement(rankingArea, () => showElement(levelSelection));
         });
+
         clearRankingBtn.addEventListener('click', () => {
-            if (confirm("Tem certeza que deseja limpar o ranking?")) {
+            const confirmModal = document.createElement('div');
+            confirmModal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-50';
+            confirmModal.innerHTML = `
+                <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 p-6 shadow-2xl">
+                    <h2 class="text-xl font-bold mb-4 text-yellow-300">Limpar Ranking</h2>
+                    <p class="mb-6">Tem certeza que deseja limpar o ranking? Esta ação não pode ser desfeita.</p>
+                    <div class="flex gap-3">
+                        <button id="confirmCancel" class="flex-1 bg-gray-600 hover:bg-gray-700 py-2 rounded-lg font-medium transition-colors">
+                            Cancelar
+                        </button>
+                        <button id="confirmClear" class="flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg font-medium transition-colors">
+                            Limpar
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(confirmModal);
+            
+            document.getElementById('confirmClear').addEventListener('click', () => {
                 localStorage.removeItem('ranking');
                 displayRanking();
+                document.body.removeChild(confirmModal);
+            });
+            
+            document.getElementById('confirmCancel').addEventListener('click', () => {
+                document.body.removeChild(confirmModal);
+            });
+        });
+
+        // EVENT LISTENER CORRIGIDO - APENAS UM
+        submitNameBtn.addEventListener('click', function() {
+            const playerName = playerNameInput.value.trim() || "Jogador";
+            if (playerName) {
+                savePlayerScoreToRanking(playerName, currentScoreToSave, currentLevel);
+                hideNameModal();
+                showFeedback(`Pontuação de ${playerName} salva no ranking!`, 'bg-green-600/70');
+            }
+        });
+
+        cancelNameBtn.addEventListener('click', function() {
+            hideNameModal();
+        });
+
+        playerNameInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitNameBtn.click();
+            }
+        });
+
+        nameModal.addEventListener('click', function(e) {
+            if (e.target === nameModal) {
+                hideNameModal();
             }
         });
     }
