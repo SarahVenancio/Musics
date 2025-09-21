@@ -11,7 +11,7 @@
 <body>
     <div class="container mx-auto px-4 max-w-5xl">
         <header class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-pink-400">Ligue a Música ao Cantor</h1>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-pink-400">Quem Canta Essa?</h1>
             <p class="text-lg opacity-80">Arraste cada música para o cantor correspondente!</p>
             <div class="mt-4 flex flex-wrap justify-center items-center space-x-2 md:space-x-4 space-y-2 md:space-y-0">
                 <div class="bg-white/10 rounded-lg px-4 py-2">
@@ -33,11 +33,12 @@
             <div id="levelSelection" class="game-transition bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-2xl mb-8 text-center">
                 <h2 class="text-2xl font-bold mb-6">Escolha o Nível de Dificuldade</h2>
                 <p class="text-sm opacity-70 mb-4">Selecione um nível para começar. Você pode filtrar por gênero também!</p>
-
+<hr/><br>
                 <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-3">Filtrar por Gênero</h3>
+                    <h3 class="text-2xl font-bold mb-6">Filtrar por Gênero</h3>
                     <div id="genreFilters" class="flex flex-wrap justify-center gap-2">
-                        </div>
+                        <!-- Filtros de gênero serão inseridos aqui via JavaScript -->
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -58,6 +59,7 @@
                     <i class="fas fa-medal mr-2"></i>Ver Ranking
                 </button>
             </div>
+
             <div id="gameArea" class="game-transition bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-2xl mb-8 hidden">
                 <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                     <button id="backToLevels" class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
@@ -126,6 +128,7 @@
                     </button>
                 </div>
             </div>
+
             <div id="rankingArea" class="game-transition bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-2xl mb-8 hidden">
                 <h2 class="text-3xl font-bold text-center mb-6 text-yellow-300">Ranking</h2>
                 <div class="flex justify-center mb-6">
@@ -144,56 +147,84 @@
                             </tr>
                         </thead>
                         <tbody id="rankingTableBody">
-                            </tbody>
+                            <!-- Conteúdo do ranking será inserido aqui via JavaScript -->
+                        </tbody>
                     </table>
                 </div>
                 <div class="text-center mt-6">
                     <button id="clearRankingBtn" class="text-red-400 hover:text-red-500 text-sm opacity-80">Limpar Ranking</button>
                 </div>
             </div>
-            </main>
+        </main>
+    </div>
 
-        <div id="helpModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
-            <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 p-6 shadow-2xl transform scale-95 opacity-0 transition-all duration-300">
-                <h2 class="text-2xl font-bold mb-4 text-yellow-300">Como Jogar</h2>
-                <ul class="space-y-3 mb-6">
-                    <li class="flex items-start">
-                        <i class="fas fa-arrow-right text-yellow-300 mt-1 mr-2"></i>
-                        <span>Arraste cada música para o cantor correspondente.</span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fas fa-arrow-right text-yellow-300 mt-1 mr-2"></i>
-                        <span>Você também pode clicar na música e depois no cantor.</span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fas fa-arrow-right text-yellow-300 mt-1 mr-2"></i>
-                        <span>Clique em **'Verificar Respostas'** quando terminar o jogo.</span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fas fa-arrow-right text-yellow-300 mt-1 mr-2"></i>
-                        <span>A pontuação por acerto é baseada no nível de dificuldade.</span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fas fa-arrow-right text-yellow-300 mt-1 mr-2"></i>
-                        <span>O bônus de tempo é calculado ao final do jogo.</span>
-                    </li>
-                    <li class="flex items-start">
-                        <i class="fas fa-arrow-right text-yellow-300 mt-1 mr-2"></i>
-                        <span>Clique no ícone de som <i class="fas fa-volume-up text-blue-300"></i> para ouvir a prévia de uma música.</span>
-                    </li>
-                </ul>
-                <div class="mb-4">
-                    <h3 class="font-semibold mb-2">Pontuação por Nível:</h3>
-                    <p>Fácil: 10 pontos por acerto</p>
-                    <p>Médio: 15 pontos por acerto</p>
-                    <p>Difícil: 20 pontos por acerto</p>
-                </div>
-                <button id="closeHelp" class="bg-purple-600 hover:bg-purple-700 w-full py-2 rounded-lg font-medium transition-colors">
-                    Entendi
+    <!-- Modal de Ajuda -->
+    <div id="helpModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 p-6 shadow-2xl transform scale-95 opacity-0 transition-all duration-300">
+            <h2 class="text-2xl font-bold mb-4 text-yellow-300">Como Jogar</h2>
+            <ul class="space-y-3 mb-6">
+                <li class="flex items-start">
+                    <i class="fas fa-arrow-right text-yellow-300 mt-1 mr-2"></i>
+                    <span>Arraste cada música para o cantor correspondente.</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-arrow-right text-yellow-300 mt-1 mr-2"></i>
+                    <span>Você também pode clicar na música e depois no cantor.</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-arrow-right text-yellow-300 mt-1 mr-2"></i>
+                    <span>Clique em <strong>Verificar Respostas</strong> quando terminar o jogo.</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-arrow-right text-yellow-300 mt-1 mr-2"></i>
+                    <span>A pontuação por acerto é baseada no nível de dificuldade.</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-arrow-right text-yellow-300 mt-1 mr-2"></i>
+                    <span>O bônus de tempo é calculado ao final do jogo.</span>
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-arrow-right text-yellow-300 mt-1 mr-2"></i>
+                    <span>Clique no ícone de som <i class="fas fa-volume-up text-blue-300"></i> para ouvir a prévia de uma música.</span>
+                </li>
+            </ul>
+            <div class="mb-4">
+                <h3 class="font-semibold mb-2">Pontuação por Nível:</h3>
+                <p>Fácil: 10 pontos por acerto</p>
+                <p>Médio: 15 pontos por acerto</p>
+                <p>Difícil: 20 pontos por acerto</p>
+            </div>
+            <button id="closeHelp" class="bg-purple-600 hover:bg-purple-700 w-full py-2 rounded-lg font-medium transition-colors">
+                Entendi
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para inserir nome -->
+    <div id="nameModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 p-6 shadow-2xl transform scale-95 opacity-0 transition-all duration-300">
+            <h2 class="text-2xl font-bold mb-4 text-yellow-300">Fim do Jogo!</h2>
+            <p class="mb-4">Você fez <span class="text-green-400 font-bold" id="finalScore">0</span> pontos no nível <span class="text-blue-300 font-bold" id="finalLevel">Fácil</span>.</p>
+            <p class="mb-6">Digite seu nome para entrar no ranking:</p>
+            
+            <div class="mb-6">
+                <input type="text" id="playerNameInput" 
+                       class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500" 
+                       placeholder="Seu nome" maxlength="20" autocomplete="off">
+                <p class="text-sm text-gray-400 mt-2">Máximo de 20 caracteres</p>
+            </div>
+            
+            <div class="flex gap-3">
+                <button id="cancelNameBtn" class="flex-1 bg-gray-600 hover:bg-gray-700 py-2 rounded-lg font-medium transition-colors">
+                    Cancelar
+                </button>
+                <button id="submitNameBtn" class="flex-1 bg-green-600 hover:bg-green-700 py-2 rounded-lg font-medium transition-colors flex items-center justify-center">
+                    <i class="fas fa-trophy mr-2"></i>Salvar
                 </button>
             </div>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
