@@ -346,6 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 274, song: "Se Preparem", artist: "O Rei Leão", genre: "Disney", preview: ""},
         {id: 275, song: "Dos Oruguitas", artist: "Encanto", genre: "Disney", preview: ""},
     ];
+    ];
 
     const levelConfig = {
         easy: { count: 4, time: 90, points: 10 },
@@ -362,6 +363,9 @@ document.addEventListener('DOMContentLoaded', function() {
         createGenreFilters(allGenres);
         setupEventListeners();
         resetGame();
+        
+        // Definir o nível inicial como "Fácil" nos displays
+        updateLevelDisplay();
     }
 
     // Gerenciamento de UI
@@ -387,6 +391,13 @@ document.addEventListener('DOMContentLoaded', function() {
             item.classList.add('fade-in');
             item.style.animationDelay = `${index * 0.1}s`;
         });
+    }
+
+    // Função para atualizar o display do nível em todos os locais
+    function updateLevelDisplay() {
+        const levelText = levelNames[currentLevel];
+        levelDisplay.textContent = levelText;
+        currentLevelSpan.textContent = levelText;
     }
 
     // Funções para controlar o modal de nome
@@ -434,6 +445,9 @@ document.addEventListener('DOMContentLoaded', function() {
         resetGame();
         hideElement(levelSelection, () => showElement(gameArea));
         hideElement(rankingArea);
+
+        // Atualizar o display do nível antes de iniciar o jogo
+        updateLevelDisplay();
 
         const filteredData = musicData.filter(item => selectedGenres.includes('all') || selectedGenres.includes(item.genre));
         const selectedData = shuffleArray([...filteredData]).slice(0, levelConfig[currentLevel].count);
@@ -814,7 +828,7 @@ document.addEventListener('DOMContentLoaded', function() {
         artistElement.classList.remove('bg-yellow-500', 'text-gray-900');
     }
 
-    // Gerenciamento de eventos
+    // Gerenciamento de eventos - CORRIGIDO
     function setupEventListeners() {
         levelButtons.forEach(button => {
             button.addEventListener('click', function() {
@@ -822,9 +836,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 pointsPerAnswer = levelConfig[currentLevel].points;
                 levelButtons.forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
-                const levelText = this.textContent.split('\n')[0].trim();
-                levelDisplay.textContent = levelText;
-                currentLevelSpan.textContent = levelText;
+                
+                // CORREÇÃO: Usar a tradução correta do nome do nível
+                updateLevelDisplay();
                 setTimeout(startNewGame, 500);
             });
         });
@@ -898,7 +912,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // EVENT LISTENER CORRIGIDO - APENAS UM
         submitNameBtn.addEventListener('click', function() {
             const playerName = playerNameInput.value.trim() || "Jogador";
             if (playerName) {
