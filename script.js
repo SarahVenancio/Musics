@@ -346,7 +346,6 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 274, song: "Se Preparem", artist: "O Rei Leão", genre: "Disney", preview: ""},
         {id: 275, song: "Dos Oruguitas", artist: "Encanto", genre: "Disney", preview: ""},
     ];
-    ];
 
     const levelConfig = {
         easy: { count: 4, time: 90, points: 10 },
