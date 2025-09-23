@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 49, song: "Come Together", artist: "The Beatles", genre: "Rock", preview: ""},
         {id: 50, song: "Another Brick in the Wall", artist: "Pink Floyd", genre: "Rock", preview: ""},
         
-	      {id: 51, song: "Lose Yourself", artist: "Eminem", genre: "Hip Hop", preview: ""},
+	    {id: 51, song: "Lose Yourself", artist: "Eminem", genre: "Hip Hop", preview: ""},
         {id: 52, song: "Sicko Mode", artist: "Travis Scott", genre: "Hip Hop", preview: ""},
         {id: 53, song: "HUMBLE.", artist: "Kendrick Lamar", genre: "Hip Hop", preview: ""},
         {id: 54, song: "God's Plan", artist: "Drake", genre: "Hip Hop", preview: ""},
@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 254, song: "O Céu Eu Vou Tocar", artist: "Valente", genre: "Disney", preview: ""},
         {id: 255, song: "Aqui No Mar", artist: "A Pequena Sereia", genre: "Disney", preview: ""},
         {id: 256, song: "Quase Lá", artist: "A Princesa e o Sapo", genre: "Disney", preview: ""},
-         {id: 257, song: "Space Between", artist: "Descendentes 2", genre: "Disney", preview: ""},
+        {id: 257, song: "Space Between", artist: "Descendentes 2", genre: "Disney", preview: ""},
         {id: 258, song: "Did I Mention", artist: "Descendentes", genre: "Disney", preview: ""},
         {id: 259, song: "Se Encontrar", artist: "Frozen 2", genre: "Disney", preview: ""},
         {id: 260, song: "Sentimentos São", artist: "A Bela e a Fera", genre: "Disney", preview: ""},
