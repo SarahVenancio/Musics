@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
         {id: 245, song: "For Good", artist: "Wicked Cast", genre: "Musicais", preview: ""},
         {id: 246, song: "The Room Where It Happens", artist: "Hamilton Cast", genre: "Musicais", preview: ""},
         {id: 247, song: "There! Right There!", artist: "Legally Blonde Cast", genre: "Musicais", preview: ""},
-        {id: 248, song: "Wavig Through A Window", artist: "Dear Evan Hansen Cast", genre: "Musicais", preview: ""},
+        {id: 248, song: "Waving Through A Window", artist: "Dear Evan Hansen Cast", genre: "Musicais", preview: ""},
         {id: 249, song: "Agony", artist: "Into The Woods Cast", genre: "Musicais", preview: ""},
         {id: 250, song: "No One Is Alone", artist: "Into The Woods Cast", genre: "Musicais", preview: ""},
 
