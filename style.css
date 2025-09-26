@@ -219,10 +219,48 @@ body {
 
 /* Melhorias de responsividade */
 @media (max-width: 768px) {
-    .container {
-        padding: 1rem;
+    body {
+        padding: 1rem 0;
     }
-    
+
+    .container {
+        padding: 0 1rem;
+    }
+
+    h1.text-4xl, .text-4xl {
+        font-size: 1.75rem; /* 28px */
+        line-height: 2.25rem;
+    }
+
+    p.text-lg {
+        font-size: 1rem; /* 16px */
+    }
+
+    .level-btn, .game-mode-btn {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+
+    #gameArea .grid {
+        gap: 1rem;
+    }
+
+    #songsList, #artistsList {
+        min-height: 200px;
+        padding: 0.75rem;
+    }
+
+    .song-item, .artist-item {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    #checkBtn, #tryAgainBtn, #nextGameBtn, #helpBtn {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
     .grid-cols-1 {
         grid-template-columns: 1fr;
     }
@@ -231,12 +269,25 @@ body {
         flex-direction: column;
     }
     
-    .text-4xl {
+    .text-5xl {
+        font-size: 2.5rem;
+    }
+
+    #memoryGrid {
+        gap: 0.5rem;
+    }
+
+    .memory-card-back i {
         font-size: 2rem;
     }
     
-    .text-5xl {
-        font-size: 2.5rem;
+    .memory-card-front span {
+        font-size: 0.65rem;
+    }
+
+    footer {
+        margin-top: 2rem;
+        padding-bottom: 1.5rem;
     }
 }
 
@@ -329,4 +380,13 @@ button:active {
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.5);
+}
+
+/* Estilos para o Rodapé */
+footer a i {
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+footer a:hover i {
+    transform: scale(1.2);
 }
