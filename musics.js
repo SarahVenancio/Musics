@@ -122,10 +122,8 @@ const musicData = [
     {id: 117, song: "Booyah", artist: "Showtek", genre: "Eletrônica", preview: ""},
     {id: 118, song: "Ping Pong", artist: "Armin van Buuren", genre: "Eletrônica", preview: ""},
     {id: 119, song: "Gold Skies", artist: "Martin Garrix", genre: "Eletrônica", preview: ""},
-    {id: 120, song: "Spectrum", artist: "Zedd ft. Matthew Koma", genre: "Eletrônica", preview: ""},
     {id: 121, song: "Sweet Nothing", artist: "Calvin Harris ft. Florence Welch", genre: "Eletrônica", preview: ""},
     {id: 122, song: "Feel So Close", artist: "Calvin Harris", genre: "Eletrônica", preview: ""},
-    {id: 123, song: "Reload", artist: "Sebastian Ingrosso & Tommy Trash", genre: "Eletrônica", preview: ""},
     {id: 124, song: "Greyhound", artist: "Swedish House Mafia", genre: "Eletrônica", preview: ""},
     {id: 125, song: "Adagio for Strings", artist: "Tiesto", genre: "Eletrônica", preview: ""},
 
@@ -197,7 +195,6 @@ const musicData = [
     {id: 189, song: "Stir It Up", artist: "Bob Marley", genre: "Reggae", preview: ""},
     {id: 190, song: "Get Up, Stand Up", artist: "Bob Marley", genre: "Reggae", preview: ""},
     {id: 191, song: "Buffalo Soldier", artist: "Bob Marley", genre: "Reggae", preview: ""},
-    {id: 192, song: "Could You Be Loved", artist: "Bob Marley", genre: "Reggae", preview: ""},
     {id: 193, song: "Jamming", artist: "Bob Marley", genre: "Reggae", preview: ""},
     {id: 194, song: "Exodus", artist: "Bob Marley", genre: "Reggae", preview: ""},
     {id: 195, song: "Iron Lion Zion", artist: "Bob Marley", genre: "Reggae", preview: ""},
