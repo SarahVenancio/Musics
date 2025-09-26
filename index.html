@@ -31,11 +31,20 @@
 
         <main>
             <div id="levelSelection" class="game-transition bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-2xl mb-8 text-center">
+                <h2 class="text-2xl font-bold mb-6">Escolha o Modo de Jogo</h2>
+                <div class="flex justify-center gap-4 mb-6">
+                    <button id="connectModeBtn" class="game-mode-btn bg-blue-600 hover:bg-blue-700 py-3 px-6 rounded-lg font-medium transition-colors active">
+                        <i class="fas fa-link mr-2"></i>Ligar Música
+                    </button>
+                    <button id="memoryModeBtn" class="game-mode-btn bg-purple-600 hover:bg-purple-700 py-3 px-6 rounded-lg font-medium transition-colors">
+                        <i class="fas fa-brain mr-2"></i>Jogo da Memória
+                    </button>
+                </div>
+                <hr class="border-gray-600 my-6">
                 <h2 class="text-2xl font-bold mb-6">Escolha o Nível de Dificuldade</h2>
                 <p class="text-sm opacity-70 mb-4">Selecione um nível para começar. Você pode filtrar por gênero também!</p>
-<hr/><br>
                 <div class="mb-6">
-                    <h3 class="text-2xl font-bold mb-6">Filtrar por Gênero</h3>
+                    <h3 class="text-xl font-bold mb-4">Filtrar por Gênero</h3>
                     <div id="genreFilters" class="flex flex-wrap justify-center gap-2">
                         <!-- Filtros de gênero serão inseridos aqui via JavaScript -->
                     </div>
@@ -44,15 +53,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <button data-level="easy" class="level-btn bg-green-600 hover:bg-green-700 py-4 rounded-lg font-medium transition-colors">
                         <i class="fas fa-star-half-alt mr-2"></i>Fácil
-                        <p class="text-sm mt-1">4 músicas</p>
+                        <p class="text-sm mt-1" id="easyLevelText">4 músicas</p>
                     </button>
                     <button data-level="medium" class="level-btn bg-yellow-600 hover:bg-yellow-700 py-4 rounded-lg font-medium transition-colors">
                         <i class="fas fa-star mr-2"></i>Médio
-                        <p class="text-sm mt-1">6 músicas</p>
+                        <p class="text-sm mt-1" id="mediumLevelText">6 músicas</p>
                     </button>
                     <button data-level="hard" class="level-btn bg-red-600 hover:bg-red-700 py-4 rounded-lg font-medium transition-colors">
                         <i class="fas fa-star mr-2"></i>Difícil
-                        <p class="text-sm mt-1">8 músicas</p>
+                        <p class="text-sm mt-1" id="hardLevelText">8 músicas</p>
                     </button>
                 </div>
                 <button id="showRankingBtn" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center mx-auto mt-4">
@@ -125,6 +134,33 @@
                     </button>
                     <button id="helpBtn" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center">
                         <i class="fas fa-question-circle mr-2"></i>Ajuda
+                    </button>
+                </div>
+            </div>
+
+            <div id="memoryGameArea" class="game-transition bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-2xl mb-8 hidden">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <button id="backToLevelsFromMemory" class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i>Voltar
+                    </button>
+                    <div class="flex items-center space-x-4">
+                        <div id="memoryTimer" class="bg-purple-700/50 rounded-full w-12 h-12 flex items-center justify-center text-lg font-bold">
+                            0
+                        </div>
+                        <div id="memoryMoves" class="bg-blue-700/50 rounded-lg px-4 py-2">
+                            Movimentos: <span id="movesCount" class="font-bold">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="memoryGrid" class="grid grid-cols-4 gap-4">
+                    <!-- Cards do jogo da memória serão inseridos aqui -->
+                </div>
+                 <div id="memoryFeedbackArea" class="hidden text-center py-4 px-6 rounded-lg mb-6 transform scale-y-0 opacity-0 transition-all duration-300 origin-bottom mt-6">
+                    <p id="memoryFeedbackText" class="text-xl font-semibold"></p>
+                </div>
+                <div class="flex justify-center mt-6">
+                    <button id="resetMemoryGame" class="bg-red-600 hover:bg-red-700 px-8 py-3 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center">
+                        <i class="fas fa-sync mr-2"></i>Reiniciar
                     </button>
                 </div>
             </div>
