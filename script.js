@@ -807,13 +807,103 @@ document.addEventListener('DOMContentLoaded', function() {
         li.appendChild(contentDiv);
         li.appendChild(playButton);
 
+        // Desktop Drag & Drop
         li.addEventListener('dragstart', (e) => {
+            if (gameOver) return;
             e.dataTransfer.setData('text/plain', item.song);
             li.classList.add('dragging');
         });
         li.addEventListener('dragend', () => {
             li.classList.remove('dragging');
         });
+
+        // Mobile Touch Drag & Drop
+        let clone = null;
+        let startX, startY;
+        let isDragging = false;
+
+        function moveClone(x, y) {
+            if (!clone) return;
+            clone.style.left = x - (clone.offsetWidth / 2) + 'px';
+            clone.style.top = y - (clone.offsetHeight / 2) + 'px';
+        }
+
+        li.addEventListener('touchstart', (e) => {
+            if (gameOver) return;
+            const touch = e.touches[0];
+            startX = touch.clientX;
+            startY = touch.clientY;
+            isDragging = false;
+        }, { passive: true });
+
+        li.addEventListener('touchmove', (e) => {
+            if (gameOver) return;
+            
+            const touch = e.touches[0];
+            const moveX = Math.abs(touch.clientX - startX);
+            const moveY = Math.abs(touch.clientY - startY);
+
+            if (!isDragging && (moveX > 5 || moveY > 5)) {
+                isDragging = true;
+                li.classList.add('dragging');
+                clone = li.cloneNode(true);
+                clone.style.position = 'absolute';
+                clone.style.width = li.offsetWidth + 'px';
+                clone.style.pointerEvents = 'none';
+                clone.style.zIndex = '1000';
+                document.body.appendChild(clone);
+            }
+
+            if (isDragging) {
+                e.preventDefault();
+                moveClone(touch.clientX, touch.clientY);
+                
+                clone.style.display = 'none';
+                const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+                clone.style.display = 'block';
+
+                document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+                if (elementUnder) {
+                    const dropZone = elementUnder.closest('.artist-item');
+                    if (dropZone && !dropZone.classList.contains('matched')) {
+                        dropZone.classList.add('drag-over');
+                    }
+                }
+            }
+        }, { passive: false });
+
+        li.addEventListener('touchend', (e) => {
+            if (gameOver || !isDragging) {
+                if (clone) {
+                    document.body.removeChild(clone);
+                    clone = null;
+                }
+                li.classList.remove('dragging');
+                isDragging = false;
+                return;
+            }
+
+            e.preventDefault();
+
+            clone.style.display = 'none';
+            const touch = e.changedTouches[0];
+            const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+            
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+
+            if (elementUnder) {
+                const dropZone = elementUnder.closest('.artist-item');
+                if (dropZone && !dropZone.classList.contains('matched')) {
+                    makeConnection(li, dropZone);
+                }
+            }
+            
+            li.classList.remove('dragging');
+            document.body.removeChild(clone);
+            clone = null;
+            isDragging = false;
+        });
+
         li.addEventListener('click', handleItemClick);
         return li;
     }
