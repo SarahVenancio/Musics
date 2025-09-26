@@ -189,6 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function startNewGame() {
+        stopAudio();
         resetGame();
         hideElement(levelSelection, () => showElement(gameArea));
         hideElement(rankingArea);
@@ -235,6 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (gameOver) return;
         gameOver = true;
         stopCountdown();
+        stopAudio();
 
         let correctCount = 0;
         let incorrectItems = [];
@@ -416,6 +418,14 @@ document.addEventListener('DOMContentLoaded', function() {
             currentAudio.play().catch(e => console.error("Erro ao tocar áudio:", e));
         } else {
             showCustomAlert('Pré-visualização de áudio não disponível para esta música.');
+        }
+    }
+
+    function stopAudio() {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            currentAudio = null;
         }
     }
 
@@ -728,10 +738,7 @@ document.addEventListener('DOMContentLoaded', function() {
         backToLevels.addEventListener('click', function() {
             hideElement(gameArea, () => showElement(levelSelection));
             stopCountdown();
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio = null;
-            }
+            stopAudio();
         });
 
         backToLevelsFromMemory.addEventListener('click', function() {
@@ -834,7 +841,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const levelToShare = finalLevelElement.textContent;
         const playerName = playerNameInput.value.trim() || "Eu";
 
-        const shareText = `${playerName} fiz ${scoreToShare} pontos no nível ${levelToShare} no jogo "Quem Canta Essa?"!  thách thức bạn bè của bạn để xem ai có thể đạt điểm cao hơn!`;
+        const shareText = `${playerName} fiz ${scoreToShare} pontos no nível ${levelToShare} no jogo "Quem Canta Essa?"! Desafie seus amigos para ver quem consegue uma pontuação maior!`;
         const shareUrl = window.location.href;
 
         if (navigator.share) {
