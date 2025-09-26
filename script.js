@@ -841,7 +841,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const levelToShare = finalLevelElement.textContent;
         const playerName = playerNameInput.value.trim() || "Eu";
 
-        const shareText = `${playerName} fiz ${scoreToShare} pontos no nível ${levelToShare} no jogo "Quem Canta Essa?"! Desafie seus amigos para ver quem consegue uma pontuação maior!`;
+        const shareText = `${playerName} fez ${scoreToShare} pontos no nível ${levelToShare} no jogo "Quem Canta Essa?"! Desafie seus amigos para ver quem consegue uma pontuação maior!`;
         const shareUrl = window.location.href;
 
         if (navigator.share) {
