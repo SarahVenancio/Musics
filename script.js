@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cancelNameBtn = document.getElementById('cancelNameBtn');
     const finalScoreElement = document.getElementById('finalScore');
     const finalLevelElement = document.getElementById('finalLevel');
+    const shareBtn = document.getElementById('shareBtn');
 
     // Elementos do Jogo da Memória
     const memoryGameArea = document.getElementById('memoryGameArea');
@@ -86,294 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let memoryTime = 0;
     let isChecking = false; // Previne cliques rápidos durante a verificação
 
-    // Dados das músicas (você pode adicionar depois)
-    const musicData = [
-        {id: 1, song: "Diva", artist: "Beyoncé", genre: "Pop", preview: ""},
-        {id: 2, song: "Shape of You", artist: "Ed Sheeran", genre: "Pop", preview: ""},
-        {id: 3, song: "Bad Guy", artist: "Billie Eilish", genre: "Pop", preview: ""},
-        {id: 4, song: "Levitating", artist: "Dua Lipa", genre: "Pop", preview: ""},
-        {id: 5, song: "Uptown Funk", artist: "Mark Ronson ft. Bruno Mars", genre: "Pop", preview: ""},
-        {id: 6, song: "Rolling in the Deep", artist: "Adele", genre: "Pop", preview: ""},
-        {id: 7, song: "Shallow", artist: "Lady Gaga & Bradley Cooper", genre: "Pop", preview: ""},
-        {id: 8, song: "Don't Start Now", artist: "Dua Lipa", genre: "Pop", preview: ""},
-        {id: 9, song: "Baby One More Time", artist: "Britney Spears", genre: "Pop", preview: ""},
-        {id: 10, song: "Dance Monkey", artist: "Tones and I", genre: "Pop", preview: ""},
-        {id: 11, song: "Believer", artist: "Imagine Dragons", genre: "Pop", preview: ""},
-        {id: 12, song: "Smooth Criminal", artist: "Michael Jackson", genre: "Pop", preview: ""},
-        {id: 13, song: "The Winner Takes It All", artist: "ABBA", genre: "Pop", preview: ""},
-        {id: 14, song: "Havana", artist: "Camila Cabello", genre: "Pop", preview: ""},
-        {id: 15, song: "Senorita", artist: "Shawn Mendes & Camila Cabello", genre: "Pop", preview: ""},
-        {id: 16, song: "Someone Like You", artist: "Adele", genre: "Pop", preview: ""},
-        {id: 17, song: "Poker Face", artist: "Lady Gaga", genre: "Pop", preview: ""},
-        {id: 18, song: "Happy", artist: "Pharrell Williams", genre: "Pop", preview: ""},
-        {id: 19, song: "Firework", artist: "Katy Perry", genre: "Pop", preview: ""},
-        {id: 20, song: "Call Me Maybe", artist: "Carly Rae Jepsen", genre: "Pop", preview: ""},
-        {id: 21, song: "Royals", artist: "Lorde", genre: "Pop", preview: ""},
-        {id: 22, song: "Toxic", artist: "Britney Spears", genre: "Pop", preview: ""},
-        {id: 23, song: "Shake It Off", artist: "Taylor Swift", genre: "Pop", preview: ""},
-        {id: 24, song: "Bad Romance", artist: "Lady Gaga", genre: "Pop", preview: ""},
-        {id: 25, song: "Clocks", artist: "Coldplay", genre: "Pop", preview: ""},
-
-        {id: 26, song: "Bohemian Rhapsody", artist: "Queen", genre: "Rock", preview: ""},
-        {id: 27, song: "Smells Like Teen Spirit", artist: "Nirvana", genre: "Rock", preview: ""},
-        {id: 28, song: "Hotel California", artist: "Eagles", genre: "Rock", preview: ""},
-        {id: 29, song: "Sweet Child O'Mine", artist: "Guns N' Roses", genre: "Rock", preview: ""},
-        {id: 30, song: "Wonderwall", artist: "Oasis", genre: "Rock", preview: ""},
-        {id: 31, song: "Californication", artist: "Red Hot Chili Peppers", genre: "Rock", preview: ""},
-        {id: 32, song: "Yellow", artist: "Coldplay", genre: "Rock", preview: ""},
-        {id: 33, song: "In the End", artist: "Linkin Park", genre: "Rock", preview: ""},
-        {id: 34, song: "Thunderstruck", artist: "AC/DC", genre: "Rock", preview: ""},
-        {id: 35, song: "Livin' on a Prayer", artist: "Bon Jovi", genre: "Rock", preview: ""},
-        {id: 36, song: "Highway to Hell", artist: "AC/DC", genre: "Rock", preview: ""},
-        {id: 37, song: "Eye of the Tiger", artist: "Survivor", genre: "Rock", preview: ""},
-        {id: 38, song: "Paint It Black", artist: "The Rolling Stones", genre: "Rock", preview: ""},
-        {id: 39, song: "Enter Sandman", artist: "Metallica", genre: "Rock", preview: ""},
-        {id: 40, song: "Back In Black", artist: "AC/DC", genre: "Rock", preview: ""},
-        {id: 41, song: "Sweet Home Alabama", artist: "Lynyrd Skynyrd", genre: "Rock", preview: ""},
-        {id: 42, song: "Paranoid", artist: "Black Sabbath", genre: "Rock", preview: ""},
-        {id: 43, song: "Smoke on the Water", artist: "Deep Purple", genre: "Rock", preview: ""},
-        {id: 44, song: "Nothing Else Matters", artist: "Metallica", genre: "Rock", preview: ""},
-        {id: 45, song: "Dream On", artist: "Aerosmith", genre: "Rock", preview: ""},
-        {id: 46, song: "November Rain", artist: "Guns N' Roses", genre: "Rock", preview: ""},
-        {id: 47, song: "Whole Lotta Love", artist: "Led Zeppelin", genre: "Rock", preview: ""},
-        {id: 48, song: "Stairway to Heaven", artist: "Led Zeppelin", genre: "Rock", preview: ""},
-        {id: 49, song: "Come Together", artist: "The Beatles", genre: "Rock", preview: ""},
-        {id: 50, song: "Another Brick in the Wall", artist: "Pink Floyd", genre: "Rock", preview: ""},
-        
-	    {id: 51, song: "Lose Yourself", artist: "Eminem", genre: "Hip Hop", preview: ""},
-        {id: 52, song: "Sicko Mode", artist: "Travis Scott", genre: "Hip Hop", preview: ""},
-        {id: 53, song: "HUMBLE.", artist: "Kendrick Lamar", genre: "Hip Hop", preview: ""},
-        {id: 54, song: "God's Plan", artist: "Drake", genre: "Hip Hop", preview: ""},
-        {id: 55, song: "Old Town Road", artist: "Lil Nas X", genre: "Hip Hop", preview: ""},
-        {id: 56, song: "In Da Club", artist: "50 Cent", genre: "Hip Hop", preview: ""},
-        {id: 57, song: "Juicy", artist: "Notorious B.I.G.", genre: "Hip Hop", preview: ""},
-        {id: 58, song: "N.Y. State of Mind", artist: "Nas", genre: "Hip Hop", preview: ""},
-        {id: 59, song: "Empire State of Mind", artist: "Jay-Z ft. Alicia Keys", genre: "Hip Hop", preview: ""},
-        {id: 60, song: "Hotline Bling", artist: "Drake", genre: "Hip Hop", preview: ""},
-        {id: 61, song: "California Love", artist: "2Pac ft. Dr. Dre", genre: "Hip Hop", preview: ""},
-        {id: 62, song: "Mo Money Mo Problems", artist: "Notorious B.I.G.", genre: "Hip Hop", preview: ""},
-        {id: 63, song: "All of the Lights", artist: "Kanye West", genre: "Hip Hop", preview: ""},
-        {id: 64, song: "Lose Control", artist: "Missy Elliott", genre: "Hip Hop", preview: ""},
-        {id: 65, song: "Rockstar", artist: "Post Malone", genre: "Hip Hop", preview: ""},
-        {id: 66, song: "Mask Off", artist: "Future", genre: "Hip Hop", preview: ""},
-        {id: 67, song: "Suge", artist: "DaBaby", genre: "Hip Hop", preview: ""},
-        {id: 68, song: "Money Trees", artist: "Kendrick Lamar", genre: "Hip Hop", preview: ""},
-        {id: 69, song: "Work It", artist: "Missy Elliott", genre: "Hip Hop", preview: ""},
-        {id: 70, song: "Ruff Ryders' Anthem", artist: "DMX", genre: "Hip Hop", preview: ""},
-        {id: 71, song: "XO TOUR Llif3", artist: "Lil Uzi Vert", genre: "Hip Hop", preview: ""},
-        {id: 72, song: "Lucid Dreams", artist: "Juice WRLD", genre: "Hip Hop", preview: ""},
-        {id: 73, song: "Hustlin'", artist: "Rick Ross", genre: "Hip Hop", preview: ""},
-        {id: 74, song: "Goosebumps", artist: "Travis Scott", genre: "Hip Hop", preview: ""},
-        {id: 75, song: "Bodak Yellow", artist: "Cardi B", genre: "Hip Hop", preview: ""},
-
-        {id: 76, song: "Evidências", artist: "Chitãozinho & Xororó", genre: "Sertanejo", preview: ""},
-        {id: 77, song: "Fio de Cabelo", artist: "Chico Rey & Paraná", genre: "Sertanejo", preview: ""},
-        {id: 78, song: "Ai Se Eu Te Pego", artist: "Michel Teló", genre: "Sertanejo", preview: ""},
-        {id: 79, song: "Amei Te Ver", artist: "Tiago Iorc", genre: "Sertanejo", preview: ""},
-        {id: 80, song: "Largado às Traças", artist: "Zé Neto & Cristiano", genre: "Sertanejo", preview: ""},
-        {id: 81, song: "Camaro Amarelo", artist: "Munhoz & Mariano", genre: "Sertanejo", preview: ""},
-        {id: 82, song: "Que Sorte a Nossa", artist: "Matheus & Kauan", genre: "Sertanejo", preview: ""},
-        {id: 83, song: "Propaganda", artist: "Jorge & Mateus", genre: "Sertanejo", preview: ""},
-        {id: 84, song: "Vidinha de Balada", artist: "Henrique & Juliano", genre: "Sertanejo", preview: ""},
-        {id: 85, song: "Te Amo Cada Vez Mais", artist: "Victor & Leo", genre: "Sertanejo", preview: ""},
-        {id: 86, song: "Maus Bocados", artist: "Marcos & Belutti", genre: "Sertanejo", preview: ""},
-        {id: 87, song: "Sosseguei", artist: "Michel Teló", genre: "Sertanejo", preview: ""},
-        {id: 88, song: "Deixa Acontecer", artist: "Mau & Ricky", genre: "Sertanejo", preview: ""},
-        {id: 89, song: "Na Hora da Raiva", artist: "Gusttavo Lima", genre: "Sertanejo", preview: ""},
-        {id: 90, song: "Pense em Mim", artist: "Leandro & Leonardo", genre: "Sertanejo", preview: ""},
-        {id: 91, song: "Ciumeira", artist: "Marília Mendonça", genre: "Sertanejo", preview: ""},
-        {id: 92, song: "Infiel", artist: "Marília Mendonça", genre: "Sertanejo", preview: ""},
-        {id: 93, song: "Cheirosa", artist: "Gusttavo Lima", genre: "Sertanejo", preview: ""},
-        {id: 94, song: "Loucura", artist: "Jads & Jadson", genre: "Sertanejo", preview: ""},
-        {id: 95, song: "Atrasadinha", artist: "Felipe Araújo & Ferrugem", genre: "Sertanejo", preview: ""},
-        {id: 96, song: "Zé da Recaída", artist: "Gusttavo Lima", genre: "Sertanejo", preview: ""},
-        {id: 97, song: "Te Assumi pro Brasil", artist: "Matheus & Kauan", genre: "Sertanejo", preview: ""},
-        {id: 98, song: "Amor Falso", artist: "Aldair Playboy", genre: "Sertanejo", preview: ""},
-        {id: 99, song: "Lindo Não É", artist: "Henrique & Juliano", genre: "Sertanejo", preview: ""},
-        {id: 100, song: "Vidinha", artist: "Zezé Di Camargo & Luciano", genre: "Sertanejo", preview: ""},
-
-        {id: 101, song: "Wake Me Up", artist: "Avicii", genre: "Eletrônica", preview: ""},
-        {id: 102, song: "Animals", artist: "Martin Garrix", genre: "Eletrônica", preview: ""},
-        {id: 103, song: "Titanium", artist: "David Guetta ft. Sia", genre: "Eletrônica", preview: ""},
-        {id: 104, song: "Lean On", artist: "Major Lazer & DJ Snake", genre: "Eletrônica", preview: ""},
-        {id: 105, song: "Closer", artist: "The Chainsmokers", genre: "Eletrônica", preview: ""},
-        {id: 106, song: "Faded", artist: "Alan Walker", genre: "Eletrônica", preview: ""},
-        {id: 107, song: "Don't You Worry Child", artist: "Swedish House Mafia", genre: "Eletrônica", preview: ""},
-        {id: 108, song: "Spectrum", artist: "Zedd ft. Matthew Koma", genre: "Eletrônica", preview: ""},
-        {id: 109, song: "Heroes (We Could Be)", artist: "Alesso ft. Tove Lo", genre: "Eletrônica", preview: ""},
-        {id: 110, song: "Waiting For Love", artist: "Avicii", genre: "Eletrônica", preview: ""},
-        {id: 111, song: "Calling (Lose My Mind)", artist: "Sebastian Ingrosso & Alesso", genre: "Eletrônica", preview: ""},
-        {id: 112, song: "Reload", artist: "Sebastian Ingrosso & Tommy Trash", genre: "Eletrônica", preview: ""},
-        {id: 113, song: "This Is What It Feels Like", artist: "Armin van Buuren", genre: "Eletrônica", preview: ""},
-        {id: 114, song: "Turn Up the Speakers", artist: "Afrojack & Martin Garrix", genre: "Eletrônica", preview: ""},
-        {id: 115, song: "Cannonball", artist: "Showtek & Justin Prime", genre: "Eletrônica", preview: ""},
-        {id: 116, song: "Tsunami", artist: "DVBBS & Borgeous", genre: "Eletrônica", preview: ""},
-        {id: 117, song: "Booyah", artist: "Showtek", genre: "Eletrônica", preview: ""},
-        {id: 118, song: "Ping Pong", artist: "Armin van Buuren", genre: "Eletrônica", preview: ""},
-        {id: 119, song: "Gold Skies", artist: "Martin Garrix", genre: "Eletrônica", preview: ""},
-        {id: 120, song: "Spectrum", artist: "Zedd ft. Matthew Koma", genre: "Eletrônica", preview: ""},
-        {id: 121, song: "Sweet Nothing", artist: "Calvin Harris ft. Florence Welch", genre: "Eletrônica", preview: ""},
-        {id: 122, song: "Feel So Close", artist: "Calvin Harris", genre: "Eletrônica", preview: ""},
-        {id: 123, song: "Reload", artist: "Sebastian Ingrosso & Tommy Trash", genre: "Eletrônica", preview: ""},
-        {id: 124, song: "Greyhound", artist: "Swedish House Mafia", genre: "Eletrônica", preview: ""},
-        {id: 125, song: "Adagio for Strings", artist: "Tiesto", genre: "Eletrônica", preview: ""},
-
-        {id: 126, song: "Águas de Março", artist: "Tom Jobim & Elis Regina", genre: "MPB", preview: ""},
-        {id: 127, song: "Garota de Ipanema", artist: "Tom Jobim & Vinícius de Moraes", genre: "MPB", preview: ""},
-        {id: 128, song: "Tocando em Frente", artist: "Almir Sater", genre: "MPB", preview: ""},
-        {id: 129, song: "O Leãozinho", artist: "Caetano Veloso", genre: "MPB", preview: ""},
-        {id: 130, song: "Por Onde Andei", artist: "Nando Reis", genre: "MPB", preview: ""},
-        {id: 131, song: "Homem Com H", artist: "Ney Matogrosso", genre: "MPB", preview: ""},
-        {id: 132, song: "Romaria", artist: "Renato Teixeira", genre: "MPB", preview: ""},
-        {id: 133, song: "Construção", artist: "Chico Buarque", genre: "MPB", preview: ""},
-        {id: 134, song: "Apesar de Você", artist: "Chico Buarque", genre: "MPB", preview: ""},
-        {id: 135, song: "Do Seu Lado", artist: "Jota Quest", genre: "MPB", preview: ""},
-        {id: 136, song: "Travessia", artist: "Milton Nascimento", genre: "MPB", preview: ""},
-        {id: 137, song: "Naquela Estação", artist: "Marisa Monte", genre: "MPB", preview: ""},
-        {id: 138, song: "Ainda Bem", artist: "Marisa Monte", genre: "MPB", preview: ""},
-        {id: 139, song: "É Você", artist: "Tribalistas", genre: "MPB", preview: ""},
-        {id: 140, song: "Já Sei Namorar", artist: "Tribalistas", genre: "MPB", preview: ""},
-        {id: 141, song: "Você é Linda", artist: "Caetano Veloso", genre: "MPB", preview: ""},
-        {id: 142, song: "Coração Vagabundo", artist: "Caetano Veloso", genre: "MPB", preview: ""},
-        {id: 143, song: "Palavras no Corpo", artist: "Gal Costa", genre: "MPB", preview: ""},
-        {id: 144, song: "Meu Nome é Gal", artist: "Gal Costa", genre: "MPB", preview: ""},
-        {id: 145, song: "Feliz, Alegre e Forte", artist: "Marisa Monte", genre: "MPB", preview: ""},
-        {id: 146, song: "Asa Branca", artist: "Luiz Gonzaga", genre: "MPB", preview: ""},
-        {id: 147, song: "Xote das Meninas", artist: "Luiz Gonzaga", genre: "MPB", preview: ""},
-        {id: 148, song: "Não Deixe O Samba Morrer", artist: "Alcione", genre: "MPB", preview: ""},
-        {id: 149, song: "Tiro Ao Álvaro", artist: "Elis Regina", genre: "MPB", preview: ""},
-        {id: 150, song: "Ainda Gosto Dela", artist: "Skank", genre: "MPB", preview: ""},
-
-        {id: 151, song: "Blame It", artist: "Jamie Foxx ft. T-Pain", genre: "R&B", preview: ""},
-        {id: 152, song: "We Belong Together", artist: "Mariah Carey", genre: "R&B", preview: ""},
-        {id: 153, song: "No Scrubs", artist: "TLC", genre: "R&B", preview: ""},
-        {id: 154, song: "Ignition (Remix)", artist: "R. Kelly", genre: "R&B", preview: ""},
-        {id: 155, song: "Adorn", artist: "Miguel", genre: "R&B", preview: ""},
-        {id: 156, song: "Earned It", artist: "The Weeknd", genre: "R&B", preview: ""},
-        {id: 157, song: "Confessions Part II", artist: "Usher", genre: "R&B", preview: ""},
-        {id: 158, song: "Love on Top", artist: "Beyoncé", genre: "R&B", preview: ""},
-        {id: 159, song: "Dilemma", artist: "Nelly ft. Kelly Rowland", genre: "R&B", preview: ""},
-        {id: 160, song: "Pony", artist: "Ginuwine", genre: "R&B", preview: ""},
-        {id: 161, song: "That's What I Like", artist: "Bruno Mars", genre: "R&B", preview: ""},
-        {id: 162, song: "Finesse", artist: "Bruno Mars ft. Cardi B", genre: "R&B", preview: ""},
-        {id: 163, song: "Can We Talk", artist: "Tevin Campbell", genre: "R&B", preview: ""},
-        {id: 164, song: "Back at One", artist: "Brian McKnight", genre: "R&B", preview: ""},
-        {id: 165, song: "If I Ain't Got You", artist: "Alicia Keys", genre: "R&B", preview: ""},
-        {id: 166, song: "No One", artist: "Alicia Keys", genre: "R&B", preview: ""},
-        {id: 167, song: "Say My Name", artist: "Destiny's Child", genre: "R&B", preview: ""},
-        {id: 168, song: "Rock with You", artist: "Michael Jackson", genre: "R&B", preview: ""},
-        {id: 169, song: "Can't Help But Wait", artist: "Trey Songz", genre: "R&B", preview: ""},
-        {id: 170, song: "We Found Love", artist: "Rihanna ft. Calvin Harris", genre: "R&B", preview: ""},
-        {id: 171, song: "Umbrella", artist: "Rihanna ft. Jay-Z", genre: "R&B", preview: ""},
-        {id: 172, song: "Boo'd Up", artist: "Ella Mai", genre: "R&B", preview: ""},
-        {id: 173, song: "Say So", artist: "Doja Cat", genre: "R&B", preview: ""},
-        {id: 174, song: "Best Part", artist: "Daniel Caesar ft. H.E.R.", genre: "R&B", preview: ""},
-        {id: 175, song: "Blinding Lights", artist: "The Weeknd", genre: "R&B", preview: ""},
-
-        {id: 176, song: "No Woman No Cry", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 177, song: "One Love", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 178, song: "Red Red Wine", artist: "UB40", genre: "Reggae", preview: ""},
-        {id: 179, song: "Sweat (A La La La La Long)", artist: "Inner Circle", genre: "Reggae", preview: ""},
-        {id: 180, song: "Bad Boys", artist: "Inner Circle", genre: "Reggae", preview: ""},
-        {id: 181, song: "Could You Be Loved", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 182, song: "Three Little Birds", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 183, song: "I Can See Clearly Now", artist: "Johnny Nash", genre: "Reggae", preview: ""},
-        {id: 184, song: "King Without A Crown", artist: "Matisyahu", genre: "Reggae", preview: ""},
-        {id: 185, song: "Welcome to Jamrock", artist: "Damian Marley", genre: "Reggae", preview: ""},
-        {id: 186, song: "It Wasn't Me", artist: "Shaggy ft. RikRok", genre: "Reggae", preview: ""},
-        {id: 187, song: "Angel", artist: "Shaggy", genre: "Reggae", preview: ""},
-        {id: 188, song: "Electric Avenue", artist: "Eddy Grant", genre: "Reggae", preview: ""},
-        {id: 189, song: "Stir It Up", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 190, song: "Get Up, Stand Up", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 191, song: "Buffalo Soldier", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 192, song: "Could You Be Loved", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 193, song: "Jamming", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 194, song: "Exodus", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 195, song: "Iron Lion Zion", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 196, song: "Turn Your Lights Down Low", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 197, song: "One Drop", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 198, song: "Rivers of Babylon", artist: "Boney M.", genre: "Reggae", preview: ""},
-        {id: 199, song: "Waiting in Vain", artist: "Bob Marley", genre: "Reggae", preview: ""},
-        {id: 200, song: "Natural Mystic", artist: "Bob Marley", genre: "Reggae", preview: ""},
-
-        {id: 201, song: "Despacito", artist: "Luis Fonsi ft. Daddy Yankee", genre: "Latino", preview: ""},
-        {id: 202, song: "Bailando", artist: "Enrique Iglesias", genre: "Latino", preview: ""},
-        {id: 203, song: "Vivir Mi Vida", artist: "Marc Anthony", genre: "Latino", preview: ""},
-        {id: 204, song: "Danza Kuduro", artist: "Don Omar", genre: "Latino", preview: ""},
-        {id: 205, song: "La Bicicleta", artist: "Shakira & Carlos Vives", genre: "Latino", preview: ""},
-        {id: 206, song: "Mi Gente", artist: "J Balvin & Willy William", genre: "Latino", preview: ""},
-        {id: 207, song: "Felices los 4", artist: "Maluma", genre: "Latino", preview: ""},
-        {id: 208, song: "Hips Don't Lie", artist: "Shakira ft. Wyclef Jean", genre: "Latino", preview: ""},
-        {id: 209, song: "DeBÍ TiRAR MáS FOToS", artist: "Bad Bunny", genre: "Latino", preview: ""},
-        {id: 210, song: "Chantaje", artist: "Shakira ft. Maluma", genre: "Latino", preview: ""},
-        {id: 211, song: "Súbeme la Radio", artist: "Enrique Iglesias", genre: "Latino", preview: ""},
-        {id: 212, song: "El Perdón", artist: "Nicky Jam & Enrique Iglesias", genre: "Latino", preview: ""},
-        {id: 213, song: "Vente Pa' Ca", artist: "Ricky Martin ft. Maluma", genre: "Latino", preview: ""},
-        {id: 214, song: "Me Enamora", artist: "Juanes", genre: "Latino", preview: ""},
-        {id: 215, song: "La Tortura", artist: "Shakira ft. Alejandro Sanz", genre: "Latino", preview: ""},
-        {id: 216, song: "Quando Me Enamoro", artist: "Juan Luis Guerra & Prince Royce", genre: "Latino", preview: ""},
-        {id: 217, song: "Corazón", artist: "Maluma ft. Nego do Borel", genre: "Latino", preview: ""},
-        {id: 218, song: "Te Boté", artist: "Nio García, Casper Mágico, Darell", genre: "Latino", preview: ""},
-        {id: 219, song: "Duele el Corazón", artist: "Enrique Iglesias ft. Wisin", genre: "Latino", preview: ""},
-        {id: 220, song: "Taki Taki", artist: "DJ Snake ft. Selena Gomez, Ozuna & Cardi B", genre: "Latino", preview: ""},
-        {id: 221, song: "Borro Cassette", artist: "Maluma", genre: "Latino", preview: ""},
-        {id: 222, song: "Safari", artist: "J Balvin ft. Pharrell Williams", genre: "Latino", preview: ""},
-        {id: 223, song: "Me Gusta", artist: "Anitta ft. Cardi B & Myke Towers", genre: "Latino", preview: ""},
-        {id: 224, song: "Criminal", artist: "Natti Natasha & Ozuna", genre: "Latino", preview: ""},
-        {id: 225, song: "Reggaetón Lento", artist: "CNCO", genre: "Latino", preview: ""},
-
-        {id: 226, song: "Defying Gravity", artist: "Wicked Cast", genre: "Musicais", preview: ""},
-        {id: 227, song: "Lady Marmalade", artist: "Moulin Rouge Cast", genre: "Musicais", preview: ""},
-        {id: 228, song: "From Now On", artist: "The Greatest Showman Cast", genre: "Musicais", preview: ""},
-        {id: 229, song: "Seasons of Love", artist: "Rent Cast", genre: "Musicais", preview: ""},
-        {id: 230, song: "All That Jazz", artist: "Chicago Cast", genre: "Musicais", preview: ""},
-        {id: 231, song: "Hopelessly Devoted To You", artist: "Grease Cast", genre: "Musicais", preview: ""},
-        {id: 232, song: "City Of Stars", artist: "La La Land Cast", genre: "Musicais", preview: ""},
-        {id: 233, song: "Tomorrow", artist: "Annie Cast", genre: "Musicais", preview: ""},
-        {id: 234, song: "I Dreamed a Dream", artist: "Les Misérables Cast", genre: "Musicais", preview: ""},
-        {id: 235, song: "Supercalifragilisticexpialidocious", artist: "Mary Poppins Cast", genre: "Musicais", preview: ""},
-        {id: 236, song: "Does Your Mother Know", artist: "Mamma Mia Cast", genre: "Musicais", preview: ""},
-        {id: 237, song: "Say My Name", artist: "Beetlejuice Cast", genre: "Musicais", preview: ""},
-        {id: 238, song: "Popular", artist: "Wicked Cast", genre: "Musicais", preview: ""},
-        {id: 239, song: "Good Morning Baltimore", artist: "Hairspray Cast", genre: "Musicais", preview: ""},
-        {id: 240, song: "Santa Fe", artist: "Newsies Cast", genre: "Musicais", preview: ""},
-        {id: 241, song: "Seventeen", artist: "Heathers Cast", genre: "Musicais", preview: ""},
-        {id: 242, song: "Somewhere", artist: "West Side Story Cast", genre: "Musicais", preview: ""},
-        {id: 243, song: "Revolting Children", artist: "Matilda Cast", genre: "Musicais", preview: ""},
-        {id: 244, song: "I'm Not That Girl", artist: "Wicked Cast", genre: "Musicais", preview: ""},
-        {id: 245, song: "For Good", artist: "Wicked Cast", genre: "Musicais", preview: ""},
-        {id: 246, song: "The Room Where It Happens", artist: "Hamilton Cast", genre: "Musicais", preview: ""},
-        {id: 247, song: "There! Right There!", artist: "Legally Blonde Cast", genre: "Musicais", preview: ""},
-        {id: 248, song: "Waving Through A Window", artist: "Dear Evan Hansen Cast", genre: "Musicais", preview: ""},
-        {id: 249, song: "Agony", artist: "Into The Woods Cast", genre: "Musicais", preview: ""},
-        {id: 250, song: "No One Is Alone", artist: "Into The Woods Cast", genre: "Musicais", preview: ""},
-
-      	{id: 251, song: "Ciclo Sem Fim", artist: "O Rei Leão", genre: "Disney", preview: ""},
-        {id: 252, song: "Vejo Enfim A Luz Brihar", artist: "Enrolados", genre: "Disney", preview: ""},
-        {id: 253, song: "Um Mundo Ideal", artist: "Aladdin", genre: "Disney", preview: ""},
-        {id: 254, song: "O Céu Eu Vou Tocar", artist: "Valente", genre: "Disney", preview: ""},
-        {id: 255, song: "Aqui No Mar", artist: "A Pequena Sereia", genre: "Disney", preview: ""},
-        {id: 256, song: "Quase Lá", artist: "A Princesa e o Sapo", genre: "Disney", preview: ""},
-        {id: 257, song: "Space Between", artist: "Descendentes 2", genre: "Disney", preview: ""},
-        {id: 258, song: "Did I Mention", artist: "Descendentes", genre: "Disney", preview: ""},
-        {id: 259, song: "Se Encontrar", artist: "Frozen 2", genre: "Disney", preview: ""},
-        {id: 260, song: "Sentimentos São", artist: "A Bela e a Fera", genre: "Disney", preview: ""},
-        {id: 261, song: "Homem Ser", artist: "Mulan", genre: "Disney", preview: ""},
-        {id: 262, song: "No Meu Coração Você Vai Sempre Estar", artist: "Tarzan", genre: "Disney", preview: ""},
-        {id: 263, song: "Por Uma Vez Na Eternidade", artist: "Frozen", genre: "Disney", preview: ""},
-        {id: 264, song: "Como Ela Sabe Que A Ama", artist: "Encantada", genre: "Disney", preview: ""},
-        {id: 265, song: "Seu Lugar", artist: "Moana", genre: "Disney", preview: ""},
-        {id: 266, song: "Não Falamos Do Bruno", artist: "Encanto", genre: "Disney", preview: ""},
-        {id: 267, song: "This Is Me", artist: "Camp Rock", genre: "Disney", preview: ""},
-        {id: 268, song: "A Divisão", artist: "Tinker Bell", genre: "Disney", preview: ""},
-        {id: 269, song: "Era Uma Vez No Sonho", artist: "A Bela Adormecida", genre: "Disney", preview: ""},
-        {id: 270, song: "Lembre De Mim", artist: "Viva - A Vida É Uma Festa", genre: "Disney", preview: ""},
-        {id: 271, song: "Sua Mãe Sabe Mais", artist: "Enrolados", genre: "Disney", preview: ""},
-        {id: 272, song: "De Zero a Herói", artist: "Hércules", genre: "Disney", preview: ""},
-        {id: 273, song: "Amigos Do Outro Lado", artist: "A Princesa e o Sapo", genre: "Disney", preview: ""},
-        {id: 274, song: "Se Preparem", artist: "O Rei Leão", genre: "Disney", preview: ""},
-        {id: 275, song: "Dos Oruguitas", artist: "Encanto", genre: "Disney", preview: ""},
-    ];
+    // Dados das músicas foram movidos para music-data.js
 
     const levelConfig = {
         easy: { count: 4, time: 90, points: 10 },
@@ -483,7 +197,13 @@ document.addEventListener('DOMContentLoaded', function() {
         updateLevelDisplay();
 
         const filteredData = musicData.filter(item => selectedGenres.includes('all') || selectedGenres.includes(item.genre));
+        
+        // Usamos shuffleArray para garantir uma seleção aleatória de músicas para cada jogo,
+        // o que é melhor para a jogabilidade do que uma ordem previsível de um algoritmo
+        // de ordenação como o bubble sort. Essa abordagem evita a repetição de músicas
+        // de forma não previsível.
         const selectedData = shuffleArray([...filteredData]).slice(0, levelConfig[currentLevel].count);
+        
         if (selectedData.length === 0) {
             showCustomAlert('Nenhuma música encontrada para os gêneros selecionados. Por favor, escolha outros gêneros.');
             showElement(levelSelection);
@@ -1105,6 +825,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 hideNameModal();
             }
         });
+
+        shareBtn.addEventListener('click', shareResult);
+    }
+
+    function shareResult() {
+        const scoreToShare = finalScoreElement.textContent;
+        const levelToShare = finalLevelElement.textContent;
+        const playerName = playerNameInput.value.trim() || "Eu";
+
+        const shareText = `${playerName} fiz ${scoreToShare} pontos no nível ${levelToShare} no jogo "Quem Canta Essa?"!  thách thức bạn bè của bạn để xem ai có thể đạt điểm cao hơn!`;
+        const shareUrl = window.location.href;
+
+        if (navigator.share) {
+            navigator.share({
+                title: 'Olha o meu resultado no Quem Canta Essa?!',
+                text: shareText,
+                url: shareUrl,
+            })
+            .then(() => showCustomAlert('Resultado compartilhado com sucesso!'))
+            .catch((error) => {
+                console.error('Erro ao compartilhar:', error)
+                showCustomAlert('Não foi possível compartilhar. Tente novamente.');
+            });
+        } else {
+            const fullText = `${shareText}\nJogue também: ${shareUrl}`;
+            navigator.clipboard.writeText(fullText).then(() => {
+                showCustomAlert('Resultado copiado para a área de transferência!');
+            }).catch(err => {
+                console.error('Falha ao copiar o texto: ', err);
+                showCustomAlert('Não foi possível copiar o resultado.');
+            });
+        }
     }
 
     function toggleGenreFilter(genre) {
