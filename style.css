@@ -246,6 +246,68 @@ button:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+/* Estilos do Jogo da Memória */
+.game-mode-btn.active {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+.memory-card {
+    background-color: transparent;
+    aspect-ratio: 1 / 1;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.memory-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    border-radius: 0.5rem;
+}
+
+.memory-card.flipped .memory-card-inner {
+    transform: rotateY(180deg);
+}
+
+.memory-card-front, .memory-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    overflow: hidden;
+}
+
+.memory-card-back {
+    background: linear-gradient(135deg, #4f46e5, #a855f7);
+    color: white;
+}
+
+.memory-card-back i {
+    font-size: 2.5rem;
+}
+
+.memory-card-front {
+    background-color: #1f2937;
+    color: white;
+    transform: rotateY(180deg);
+}
+
+.memory-card.matched .memory-card-front {
+    background-color: #10b981;
+    box-shadow: 0 0 15px #10b981;
+}
+
 button:active {
     transform: translateY(0);
 }
