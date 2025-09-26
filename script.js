@@ -1,5 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos DOM
+    const connectModeBtn = document.getElementById('connectModeBtn');
+    const memoryModeBtn = document.getElementById('memoryModeBtn');
+    const easyLevelText = document.getElementById('easyLevelText');
+    const mediumLevelText = document.getElementById('mediumLevelText');
+    const hardLevelText = document.getElementById('hardLevelText');
+
+    // Elementos do Jogo de Ligar
     const songsList = document.getElementById('songsList');
     const artistsList = document.getElementById('artistsList');
     const checkBtn = document.getElementById('checkBtn');
@@ -36,7 +43,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const finalScoreElement = document.getElementById('finalScore');
     const finalLevelElement = document.getElementById('finalLevel');
 
+    // Elementos do Jogo da Memória
+    const memoryGameArea = document.getElementById('memoryGameArea');
+    const memoryGrid = document.getElementById('memoryGrid');
+    const backToLevelsFromMemory = document.getElementById('backToLevelsFromMemory');
+    const memoryTimerElement = document.getElementById('memoryTimer');
+    const movesCountElement = document.getElementById('movesCount');
+    const resetMemoryGameBtn = document.getElementById('resetMemoryGame');
+    const memoryFeedbackArea = document.getElementById('memoryFeedbackArea');
+    const memoryFeedbackText = document.getElementById('memoryFeedbackText');
+
+
     // Estado do Jogo
+    let currentGameMode = 'connect'; // 'connect' ou 'memory'
     let score = 0;
     let highScore = localStorage.getItem('highScore') || 0;
     let correctAnswers = {};
@@ -57,6 +76,15 @@ document.addEventListener('DOMContentLoaded', function() {
         medium: "Médio",
         hard: "Difícil"
     };
+
+    // Estado do Jogo da Memória
+    let memoryCards = [];
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let moves = 0;
+    let memoryTimer;
+    let memoryTime = 0;
+    let isChecking = false; // Previne cliques rápidos durante a verificação
 
     // Dados das músicas (você pode adicionar depois)
     const musicData = [
@@ -353,6 +381,12 @@ document.addEventListener('DOMContentLoaded', function() {
         hard: { count: 8, time: 150, points: 20 }
     };
 
+    const memoryLevelConfig = {
+        easy: { pairs: 4, grid: 'grid-cols-4', time: 60 },  // 8 cards
+        medium: { pairs: 6, grid: 'grid-cols-4', time: 90 }, // 12 cards
+        hard: { pairs: 8, grid: 'grid-cols-4', time: 120 }   // 16 cards
+    };
+
     // Inicialização
     initGame();
 
@@ -616,19 +650,53 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Gerenciamento de Áudio
     let currentAudio = null;
+    const previewCache = new Map();
 
-    function playPreview(previewUrl) {
-        if (!previewUrl) {
-            showCustomAlert('Pré-visualização de áudio não disponível para esta música.');
-            return;
+    async function fetchPreviewUrl(song, artist) {
+        const cacheKey = `${song}-${artist}`;
+        if (previewCache.has(cacheKey)) {
+            return previewCache.get(cacheKey);
         }
+
+        const searchTerm = `${song} ${artist}`;
+        const url = `https://itunes.apple.com/search?term=${encodeURIComponent(searchTerm)}&media=music&entity=song&limit=1`;
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('A resposta da rede não foi boa');
+            }
+            const data = await response.json();
+            if (data.results.length > 0 && data.results[0].previewUrl) {
+                const previewUrl = data.results[0].previewUrl;
+                previewCache.set(cacheKey, previewUrl);
+                return previewUrl;
+            } else {
+                previewCache.set(cacheKey, null); // Cache a falha para evitar novas tentativas
+                return null;
+            }
+        } catch (error) {
+            console.error('Falha ao buscar a pré-visualização da música:', error);
+            previewCache.set(cacheKey, null);
+            return null;
+        }
+    }
+
+    async function playPreview(song, artist) {
         if (currentAudio) {
             currentAudio.pause();
             currentAudio.currentTime = 0;
         }
-        currentAudio = new Audio(previewUrl);
-        currentAudio.volume = 0.5;
-        currentAudio.play();
+
+        const previewUrl = await fetchPreviewUrl(song, artist);
+
+        if (previewUrl) {
+            currentAudio = new Audio(previewUrl);
+            currentAudio.volume = 0.5;
+            currentAudio.play().catch(e => console.error("Erro ao tocar áudio:", e));
+        } else {
+            showCustomAlert('Pré-visualização de áudio não disponível para esta música.');
+        }
     }
 
     function showCustomAlert(message) {
@@ -712,7 +780,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const li = document.createElement('li');
         li.className = `bg-blue-700/50 p-3 rounded cursor-grab song-item transition-transform flex justify-between items-center`;
         li.dataset.song = item.song;
-        li.dataset.preview = item.preview;
         li.draggable = true;
 
         const contentDiv = document.createElement('div');
@@ -734,7 +801,7 @@ document.addEventListener('DOMContentLoaded', function() {
         playButton.innerHTML = '<i class="fas fa-volume-up"></i>';
         playButton.onclick = (e) => {
             e.stopPropagation();
-            playPreview(item.preview);
+            playPreview(item.song, item.artist);
         };
 
         li.appendChild(contentDiv);
@@ -829,16 +896,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Gerenciamento de eventos - CORRIGIDO
     function setupEventListeners() {
+        connectModeBtn.addEventListener('click', () => switchGameMode('connect'));
+        memoryModeBtn.addEventListener('click', () => switchGameMode('memory'));
+
         levelButtons.forEach(button => {
             button.addEventListener('click', function() {
                 currentLevel = this.dataset.level;
-                pointsPerAnswer = levelConfig[currentLevel].points;
                 levelButtons.forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
-                
-                // CORREÇÃO: Usar a tradução correta do nome do nível
                 updateLevelDisplay();
-                setTimeout(startNewGame, 500);
+
+                if (currentGameMode === 'connect') {
+                    pointsPerAnswer = levelConfig[currentLevel].points;
+                    setTimeout(startNewGame, 300);
+                } else {
+                    setTimeout(startMemoryGame, 300);
+                }
             });
         });
 
@@ -850,6 +923,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentAudio = null;
             }
         });
+
+        backToLevelsFromMemory.addEventListener('click', function() {
+            hideElement(memoryGameArea, () => showElement(levelSelection));
+            resetMemoryGame(false);
+        });
+
+        resetMemoryGameBtn.addEventListener('click', () => resetMemoryGame(true));
 
         nextGameBtn.addEventListener('click', startNewGame);
         checkBtn.addEventListener('click', checkAnswers);
@@ -959,6 +1039,186 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectedGenres = ['all'];
                 document.querySelector('[data-genre="all"]').classList.add('active');
             }
+        }
+    }
+
+    // ===============================================
+    // LÓGICA DO JOGO DA MEMÓRIA
+    // ===============================================
+
+    function startMemoryGame() {
+        hideElement(levelSelection, () => showElement(memoryGameArea));
+        resetMemoryGame(false); // Não reiniciar o jogo ao iniciar
+
+        const config = memoryLevelConfig[currentLevel];
+        const filteredData = musicData.filter(item => selectedGenres.includes('all') || selectedGenres.includes(item.genre));
+        const selectedData = shuffleArray([...filteredData]).slice(0, config.pairs);
+        
+        if (selectedData.length < config.pairs) {
+            showCustomAlert('Não há músicas suficientes para este nível com os filtros selecionados. Tente outros filtros.');
+            hideElement(memoryGameArea, () => showElement(levelSelection));
+            return;
+        }
+
+        memoryCards = [];
+        selectedData.forEach(item => {
+            memoryCards.push({ type: 'song', value: item.song, pairId: item.id });
+            memoryCards.push({ type: 'artist', value: item.artist, pairId: item.id });
+        });
+
+        shuffleArray(memoryCards);
+
+        memoryGrid.innerHTML = '';
+        let gridClass = config.grid;
+        if (currentLevel === 'medium') gridClass = 'grid-cols-4 md:grid-cols-6';
+        if (currentLevel === 'hard') gridClass = 'grid-cols-4';
+        memoryGrid.className = `grid ${gridClass} gap-2 md:gap-4`;
+
+        memoryCards.forEach(cardData => {
+            memoryGrid.appendChild(createMemoryCard(cardData));
+        });
+        
+        startMemoryTimer();
+    }
+
+    function createMemoryCard(cardData) {
+        const card = document.createElement('div');
+        card.className = 'memory-card';
+        card.dataset.pairId = cardData.pairId;
+
+        card.innerHTML = `
+            <div class="memory-card-inner">
+                <div class="memory-card-back">
+                    <i class="fas fa-music text-3xl md:text-4xl"></i>
+                </div>
+                <div class="memory-card-front">
+                    <span class="text-xs text-center md:text-sm p-1">${cardData.value}</span>
+                </div>
+            </div>
+        `;
+
+        card.addEventListener('click', () => handleCardClick(card));
+        return card;
+    }
+
+    function handleCardClick(card) {
+        if (isChecking || card.classList.contains('flipped') || card.classList.contains('matched')) {
+            return;
+        }
+
+        card.classList.add('flipped');
+        flippedCards.push(card);
+
+        if (flippedCards.length === 2) {
+            updateMoves();
+            isChecking = true;
+            checkForMatch();
+        }
+    }
+
+    function checkForMatch() {
+        const [card1, card2] = flippedCards;
+        if (card1.dataset.pairId === card2.dataset.pairId) {
+            setTimeout(() => {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                if (matchedPairs === memoryLevelConfig[currentLevel].pairs) {
+                    endMemoryGame();
+                }
+                flippedCards = [];
+                isChecking = false;
+            }, 500);
+        } else {
+            setTimeout(() => {
+                unflipCards();
+                flippedCards = [];
+                isChecking = false;
+            }, 1200);
+        }
+    }
+
+    function unflipCards() {
+        flippedCards.forEach(card => card.classList.remove('flipped'));
+    }
+
+    function updateMoves() {
+        moves++;
+        movesCountElement.textContent = moves;
+    }
+
+    function startMemoryTimer() {
+        stopMemoryTimer();
+        memoryTime = 0;
+        memoryTimerElement.textContent = memoryTime;
+        memoryTimer = setInterval(() => {
+            memoryTime++;
+            memoryTimerElement.textContent = memoryTime;
+        }, 1000);
+    }
+    
+    function stopMemoryTimer() {
+        clearInterval(memoryTimer);
+    }
+
+    function resetMemoryGame(restart = true) {
+        stopMemoryTimer();
+        memoryTime = 0;
+        moves = 0;
+        matchedPairs = 0;
+        flippedCards = [];
+        isChecking = false;
+        memoryGrid.innerHTML = '';
+        movesCountElement.textContent = '0';
+        memoryTimerElement.textContent = '0';
+        hideElement(memoryFeedbackArea);
+        if(restart) {
+            startMemoryGame();
+        }
+    }
+
+    function endMemoryGame() {
+        stopMemoryTimer();
+        const timeBonus = Math.max(0, (memoryLevelConfig[currentLevel].time * 2 - memoryTime) * 5);
+        const movePenalty = moves * 10;
+        const baseScore = memoryLevelConfig[currentLevel].pairs * 100;
+        const finalScore = Math.max(10, baseScore + timeBonus - movePenalty);
+        
+        score = finalScore;
+        scoreElement.textContent = score;
+
+        if (score > highScore) {
+            highScore = score;
+            highScoreElement.textContent = highScore;
+            localStorage.setItem('highScore', highScore);
+        }
+
+        showMemoryFeedback(`Parabéns! Pontuação: ${finalScore}`, 'bg-green-600/70');
+        saveScoreToRanking(score, currentLevel);
+    }
+
+    function showMemoryFeedback(text, bgColor) {
+        memoryFeedbackText.textContent = text;
+        memoryFeedbackArea.className = `text-center py-4 px-6 rounded-lg mb-6 ${bgColor} transform scale-y-100 opacity-100 transition-all duration-300 origin-bottom mt-6`;
+        memoryFeedbackArea.classList.remove('hidden');
+    }
+
+    function switchGameMode(mode) {
+        if (currentGameMode === mode) return;
+        currentGameMode = mode;
+
+        if (mode === 'memory') {
+            connectModeBtn.classList.remove('active');
+            memoryModeBtn.classList.add('active');
+            easyLevelText.textContent = `${memoryLevelConfig.easy.pairs * 2} cartas`;
+            mediumLevelText.textContent = `${memoryLevelConfig.medium.pairs * 2} cartas`;
+            hardLevelText.textContent = `${memoryLevelConfig.hard.pairs * 2} cartas`;
+        } else { // connect
+            memoryModeBtn.classList.remove('active');
+            connectModeBtn.classList.add('active');
+            easyLevelText.textContent = `${levelConfig.easy.count} músicas`;
+            mediumLevelText.textContent = `${levelConfig.medium.count} músicas`;
+            hardLevelText.textContent = `${levelConfig.hard.count} músicas`;
         }
     }
 });
