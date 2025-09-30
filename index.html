@@ -265,6 +265,25 @@
         </div>
     </div>
 
+    <!-- Modal para "Zerar o Jogo" -->
+    <div id="gameBeatenModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 p-6 shadow-2xl transform scale-95 opacity-0 transition-all duration-300">
+            <h2 class="text-2xl font-bold mb-4 text-green-400">Você zerou esse game!</h2>
+            <p class="mb-6">Parabéns! Você jogou todas as músicas disponíveis. Digite seu nome para ganhar um bônus de <span class="text-yellow-300 font-bold">500</span> pontos!</p>
+            
+            <div class="mb-6">
+                <input type="text" id="gameBeatenPlayerNameInput" 
+                       class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500" 
+                       placeholder="Seu nome" maxlength="20" autocomplete="off">
+                <p class="text-sm text-gray-400 mt-2">Máximo de 20 caracteres</p>
+            </div>
+            
+            <button id="submitGameBeatenNameBtn" class="w-full bg-green-600 hover:bg-green-700 py-3 rounded-lg font-medium transition-colors flex items-center justify-center">
+                <i class="fas fa-trophy mr-2"></i>Coletar Bônus e Salvar
+            </button>
+        </div>
+    </div>
+
     <script src="musics.js"></script>
     <script src="script.js"></script>
 
