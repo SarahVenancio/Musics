@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let totalPairs;
     let isNewGameSession = true;
     let currentScoreToSave = 0;
+    let playedSongIds = new Set();
 
     // Tradução dos nomes dos níveis
     const levelNames = {
@@ -199,11 +200,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const filteredData = musicData.filter(item => selectedGenres.includes('all') || selectedGenres.includes(item.genre));
         
-        // Usamos shuffleArray para garantir uma seleção aleatória de músicas para cada jogo,
-        // o que é melhor para a jogabilidade do que uma ordem previsível de um algoritmo
-        // de ordenação como o bubble sort. Essa abordagem evita a repetição de músicas
-        // de forma não previsível.
-        const selectedData = shuffleArray([...filteredData]).slice(0, levelConfig[currentLevel].count);
+        let availableSongs = filteredData.filter(song => !playedSongIds.has(song.id));
+
+        if (availableSongs.length < levelConfig[currentLevel].count) {
+            showCustomAlert("Você jogou todas as músicas disponíveis! O ciclo de músicas será reiniciado.");
+            playedSongIds.clear();
+            availableSongs = filteredData;
+        }
+        
+        const selectedData = shuffleArray([...availableSongs]).slice(0, levelConfig[currentLevel].count);
         
         if (selectedData.length === 0) {
             showCustomAlert('Nenhuma música encontrada para os gêneros selecionados. Por favor, escolha outros gêneros.');
@@ -211,6 +216,8 @@ document.addEventListener('DOMContentLoaded', function() {
             hideElement(gameArea);
             return;
         }
+
+        selectedData.forEach(song => playedSongIds.add(song.id));
 
         correctAnswers = {};
         selectedData.forEach(item => correctAnswers[item.song] = item.artist);
@@ -739,6 +746,7 @@ document.addEventListener('DOMContentLoaded', function() {
             hideElement(gameArea, () => showElement(levelSelection));
             stopCountdown();
             stopAudio();
+            playedSongIds.clear();
         });
 
         backToLevelsFromMemory.addEventListener('click', function() {
