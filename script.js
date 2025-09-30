@@ -54,6 +54,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const memoryFeedbackArea = document.getElementById('memoryFeedbackArea');
     const memoryFeedbackText = document.getElementById('memoryFeedbackText');
 
+    // Modal de "Zerar o Jogo"
+    const gameBeatenModal = document.getElementById('gameBeatenModal');
+    const gameBeatenPlayerNameInput = document.getElementById('gameBeatenPlayerNameInput');
+    const submitGameBeatenNameBtn = document.getElementById('submitGameBeatenNameBtn');
+
 
     // Estado do Jogo
     let currentGameMode = 'connect'; // 'connect' ou 'memory'
@@ -170,6 +175,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
     }
 
+    function showGameBeatenModal() {
+        gameBeatenModal.classList.remove('hidden');
+        setTimeout(() => {
+            gameBeatenModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+            gameBeatenPlayerNameInput.focus();
+        }, 10);
+    }
+
+    function hideGameBeatenModal() {
+        const modalContent = gameBeatenModal.querySelector('div');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            gameBeatenModal.classList.add('hidden');
+        }, 300);
+    }
+
     // Lógica do jogo
     function resetGame() {
         gameOver = false;
@@ -192,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function startNewGame() {
         stopAudio();
         resetGame();
-        hideElement(levelSelection, () => showElement(gameArea));
         hideElement(rankingArea);
 
         // Atualizar o display do nível antes de iniciar o jogo
@@ -203,11 +223,11 @@ document.addEventListener('DOMContentLoaded', function() {
         let availableSongs = filteredData.filter(song => !playedSongIds.has(song.id));
 
         if (availableSongs.length < levelConfig[currentLevel].count) {
-            showCustomAlert("Você jogou todas as músicas disponíveis! O ciclo de músicas será reiniciado.");
-            playedSongIds.clear();
-            availableSongs = filteredData;
+            showGameBeatenModal();
+            return;
         }
         
+        hideElement(levelSelection, () => showElement(gameArea));
         const selectedData = shuffleArray([...availableSongs]).slice(0, levelConfig[currentLevel].count);
         
         if (selectedData.length === 0) {
@@ -842,6 +862,38 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         shareBtn.addEventListener('click', shareResult);
+
+        submitGameBeatenNameBtn.addEventListener('click', function() {
+            const playerName = gameBeatenPlayerNameInput.value.trim() || "Jogador";
+            
+            // Adicionar bônus
+            score += 500;
+            scoreElement.textContent = score;
+
+            if (score > highScore) {
+                highScore = score;
+                highScoreElement.textContent = highScore;
+                localStorage.setItem('highScore', highScore);
+            }
+            
+            savePlayerScoreToRanking(playerName, score, currentLevel);
+            
+            // Limpar músicas jogadas para o gênero atual
+            const filteredData = musicData.filter(item => !selectedGenres.includes('all') && selectedGenres.includes(item.genre));
+            if (selectedGenres.includes('all')) {
+                playedSongIds.clear();
+            } else {
+                filteredData.forEach(song => playedSongIds.delete(song.id));
+            }
+
+
+            hideGameBeatenModal();
+            showFeedback(`Bônus de 500 pontos coletado! Pontuação final de ${playerName} salva!`, 'bg-green-600/70');
+            
+            // Voltar para a tela de seleção
+            hideElement(gameArea, () => showElement(levelSelection));
+            hideElement(memoryGameArea, () => showElement(levelSelection));
+        });
     }
 
     function shareResult() {
