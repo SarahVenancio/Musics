@@ -978,9 +978,10 @@ document.addEventListener('DOMContentLoaded', function() {
         shuffleArray(memoryCards);
 
         memoryGrid.innerHTML = '';
-        let gridClass = config.grid;
-        if (currentLevel === 'medium') gridClass = 'grid-cols-4 md:grid-cols-6';
-        if (currentLevel === 'hard') gridClass = 'grid-cols-4';
+        let gridClass = 'grid-cols-2 md:grid-cols-4'; // Padrão para fácil e difícil
+        if (currentLevel === 'medium') {
+            gridClass = 'grid-cols-2 md:grid-cols-6'; // 12 cartas, 2 linhas no mobile, 2 no desktop
+        }
         memoryGrid.className = `grid ${gridClass} gap-2 md:gap-4`;
 
         memoryCards.forEach(cardData => {
