@@ -410,7 +410,6 @@ const musicData = [
     {id: 399, song: "Ray Of Solar", artist: "Swedish House Mafia", genre: "Eletrônica", preview: ""},
     {id: 400, song: "Car Keys", artist: "Alok & Ava Max", genre: "Eletrônica", preview: ""},
 
-    {id: 401, song: "Naquela Mesa", artist: "Milton Nascimento", genre: "MPB", preview: ""},
     {id: 402, song: "Canção da América", artist: "Milton Nascimento", genre: "MPB", preview: ""},
     {id: 403, song: "Paisagem na Janela", artist: "Milton Nascimento", genre: "MPB", preview: ""},
     {id: 404, song: "Exagerado", artist: "Cazuza", genre: "MPB", preview: ""},
