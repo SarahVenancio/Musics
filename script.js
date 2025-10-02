@@ -162,7 +162,11 @@ document.addEventListener('DOMContentLoaded', function() {
     initGame();
 
     function initGame() {
+        // Reset high score for deployment
+        localStorage.removeItem('highScore');
+        highScore = 0;
         highScoreElement.textContent = highScore;
+
         loadAchievementProgress(); // Carrega o progresso das conquistas
         const allGenres = [...new Set(musicData.map(item => item.genre))];
         createGenreFilters(allGenres);
