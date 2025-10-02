@@ -1,10 +1,192 @@
+/* ==========================================================================
+   Base & Mobile First Styles
+   ========================================================================== */
 body {
     background: linear-gradient(135deg, #1d023c 0%, #030a34 100%);
     min-height: 100vh;
     color: white;
-    padding: 2rem 0;
+    padding: 1rem 0.5rem; /* Mobile padding */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+.container {
+    padding: 0 1rem;
+}
+
+header {
+    text-align: center;
+}
+
+header > p {
+    padding: 0 1rem;
+    font-size: 1rem; /* from 768px */
+}
+
+header > div {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+header > div > div {
+    width: 80%;
+    max-width: 250px;
+}
+
+h1.text-4xl, .text-4xl {
+    font-size: 1.6rem;
+    line-height: 1.2;
+}
+
+.level-btn, .game-mode-btn {
+    padding: 0.8rem 0.5rem;
+    width: 100%; /* Make buttons full width on mobile */
+}
+
+#genreFilters {
+    gap: 0.4rem;
+}
+
+#gameArea .grid {
+    gap: 1rem;
+    grid-template-columns: 1fr; /* Mobile is single column */
+}
+
+#songsList, #artistsList {
+    min-height: 180px;
+    padding: 0.75rem;
+}
+
+.song-item, .artist-item {
+    padding: 0.6rem;
+    font-size: 0.85rem;
+}
+
+#checkBtn, #tryAgainBtn, #nextGameBtn, #helpBtn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+}
+
+#memoryGrid {
+    gap: 0.5rem;
+}
+
+.memory-card-back i {
+    font-size: 2rem;
+}
+
+.memory-card-front span {
+    font-size: 1.2rem;
+}
+
+footer {
+    margin-top: 2rem;
+    padding-bottom: 1.5rem;
+}
+
+.player-toggle-option {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+}
+
+/* Modal Responsiveness */
+.bg-gray-800.rounded-xl.max-w-md,
+.bg-gray-800.rounded-xl.max-w-lg,
+.bg-gray-800.rounded-xl.max-w-2xl {
+    max-width: 95vw;
+    padding: 1rem;
+}
+
+#achievementsList {
+    grid-template-columns: 1fr;
+}
+
+#nameModal .text-2xl,
+#helpModal .text-2xl,
+#gameBeatenModal .text-2xl,
+#achievementsModal .text-3xl,
+#multiplayerResultsModal .text-3xl,
+.bg-gray-800.rounded-xl h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+}
+
+.bg-gray-800.rounded-xl p {
+    font-size: 0.9rem;
+    line-height: 1.3rem;
+    margin-bottom: 1rem;
+}
+
+#nameModal .flex.gap-3,
+.bg-gray-800.rounded-xl .flex.gap-3 {
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#multiplayerResultsModal .grid-cols-2 {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+}
+
+/* ==========================================================================
+   Tablet Styles (min-width: 768px)
+   ========================================================================== */
+@media (min-width: 768px) {
+    body {
+        padding: 2rem 0; /* Revert to original padding */
+    }
+
+    h1.text-4xl, .text-4xl {
+        font-size: 1.75rem;
+        line-height: 2.25rem;
+    }
+
+    header > div {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem; /* Original gap */
+    }
+    
+    header > div > div {
+        width: auto; /* Revert width */
+    }
+    
+    .level-btn, .game-mode-btn {
+        width: auto; /* Revert width */
+    }
+
+    #gameArea .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    
+    #achievementsList {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #nameModal .flex.gap-3,
+    .bg-gray-800.rounded-xl .flex.gap-3 {
+        flex-direction: row; /* Revert to row */
+    }
+    
+    #multiplayerResultsModal .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* ==========================================================================
+   Desktop Styles (min-width: 1024px)
+   ========================================================================== */
+@media (min-width: 1024px) {
+    h1.text-4xl, .text-4xl {
+        font-size: 3rem; /* from tailwind md:text-5xl */
+    }
+}
+
+
+/* ==========================================================================
+   Generic Styles (unaffected by responsive changes)
+   ========================================================================== */
 
 .dragging {
     opacity: 0.6;
@@ -69,7 +251,6 @@ body {
     animation: pulse 1.5s infinite;
 }
 
-/* Animações suaves para o modal */
 #nameModal {
     transition: opacity 0.3s ease;
 }
@@ -78,12 +259,10 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Estilo para o input */
 #playerNameInput::placeholder {
     color: #9CA3AF;
 }
 
-/* Efeito de foco melhorado */
 #playerNameInput:focus {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
@@ -124,45 +303,19 @@ body {
     transition: opacity 0.5s ease-in-out;
 }
 
-/* Novas animações e estilos adicionados */
-.hidden {
-    display: none;
-}
+.hidden { display: none; }
+.opacity-0 { opacity: 0; }
+.opacity-100 { opacity: 1; }
+.scale-y-0 { transform: scaleY(0); }
+.scale-y-100 { transform: scaleY(1); }
+.scale-95 { transform: scale(0.95); }
+.transition-all { transition: all 0.3s ease; }
+.origin-bottom { transform-origin: bottom; }
 
-.opacity-0 {
-    opacity: 0;
-}
-
-.opacity-100 {
-    opacity: 1;
-}
-
-.scale-y-0 {
-    transform: scaleY(0);
-}
-
-.scale-y-100 {
-    transform: scaleY(1);
-}
-
-.scale-95 {
-    transform: scale(0.95);
-}
-
-.transition-all {
-    transition: all 0.3s ease;
-}
-
-.origin-bottom {
-    transform-origin: bottom;
-}
-
-/* Estilos para feedback */
 #feedbackArea {
     transition: all 0.3s ease;
 }
 
-/* Estilos para ranking */
 #rankingTableBody tr {
     transition: background-color 0.2s ease;
 }
@@ -171,133 +324,26 @@ body {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-/* Estilos para os modais */
-.fixed {
-    position: fixed;
-}
+.fixed { position: fixed; }
+.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+.z-50 { z-index: 50; }
+.bg-black\/70 { background-color: rgba(0, 0, 0, 0.7); }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.rounded-xl { border-radius: 0.75rem; }
+.shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
 
-.inset-0 {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}
-
-.z-50 {
-    z-index: 50;
-}
-
-.bg-black\/70 {
-    background-color: rgba(0, 0, 0, 0.7);
-}
-
-.flex {
-    display: flex;
-}
-
-.items-center {
-    align-items: center;
-}
-
-.justify-center {
-    justify-content: center;
-}
-
-.rounded-xl {
-    border-radius: 0.75rem;
-}
-
-.shadow-2xl {
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
-
-/* Animações específicas para elementos do jogo */
 .song-item, .artist-item {
     animation-duration: 0.5s;
     animation-fill-mode: both;
 }
 
-/* Melhorias de responsividade */
-@media (max-width: 768px) {
-    body {
-        padding: 1rem 0;
-    }
-
-    .container {
-        padding: 0 1rem;
-    }
-
-    h1.text-4xl, .text-4xl {
-        font-size: 1.75rem; /* 28px */
-        line-height: 2.25rem;
-    }
-
-    p.text-lg {
-        font-size: 1rem; /* 16px */
-    }
-
-    .level-btn, .game-mode-btn {
-        padding-top: 0.75rem;
-        padding-bottom: 0.75rem;
-    }
-
-    #gameArea .grid {
-        gap: 1rem;
-    }
-
-    #songsList, #artistsList {
-        min-height: 200px;
-        padding: 0.75rem;
-    }
-
-    .song-item, .artist-item {
-        padding: 0.75rem;
-        font-size: 0.875rem;
-    }
-
-    #checkBtn, #tryAgainBtn, #nextGameBtn, #helpBtn {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
-    }
-
-    .grid-cols-1 {
-        grid-template-columns: 1fr;
-    }
-    
-    .flex-col {
-        flex-direction: column;
-    }
-    
-    .text-5xl {
-        font-size: 2.5rem;
-    }
-
-    #memoryGrid {
-        gap: 0.5rem;
-    }
-
-    .memory-card-back i {
-        font-size: 2rem;
-    }
-    
-    .memory-card-front span {
-        font-size: 1.2rem;
-    }
-
-    footer {
-        margin-top: 2rem;
-        padding-bottom: 1.5rem;
-    }
-}
-
-/* Efeitos de hover melhorados */
 button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Estilos do Jogo da Memória */
 .game-mode-btn.active {
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
     transform: scale(1.05);
@@ -363,31 +409,15 @@ button:active {
     transform: translateY(0);
 }
 
-/* Scroll personalizado */
-::-webkit-scrollbar {
-    width: 8px;
-}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
 
-::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-/* Estilos para o Rodapé */
 footer a i {
     transition: transform 0.3s ease, color 0.3s ease;
 }
 
-/* Estilos do Toggle de Jogador */
 .player-toggle {
     position: relative;
     display: flex;
@@ -430,7 +460,6 @@ footer a i {
     transform: translateX(100%);
 }
 
-
 .achievement-toast {
     position: fixed;
     bottom: 20px;
@@ -451,4 +480,22 @@ footer a i {
 
 footer a:hover i {
     transform: scale(1.2);
+}
+
+.reset-single-achievement {
+    transition: all 0.3s ease;
+}
+
+.reset-single-achievement:hover {
+    background-color: rgba(239, 68, 68, 0.3);
+    transform: scale(1.1);
+}
+
+#achievementsList button {
+    transition: all 0.3s ease;
+}
+
+#achievementsList button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
