@@ -137,12 +137,25 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: 'collect_rock', title: 'Lenda do Rock', description: 'Colete todas as músicas do gênero Rock.', icon: 'fa-guitar' },
         { id: 'collect_sertanejo', title: 'Rei do Sertanejo', description: 'Colete todas as músicas do gênero Sertanejo.', icon: 'fa-hat-cowboy' },
         { id: 'collect_all', title: 'Mestre Musical', description: 'Colete TODAS as músicas do jogo.', icon: 'fa-trophy' },
+        // NOVAS CONQUISTAS
+        { id: 'first_win', title: 'Primeira Vitória', description: 'Complete seu primeiro jogo com sucesso.', icon: 'fa-star' },
+        { id: 'memory_master', title: 'Mestre da Memória', description: 'Complete um jogo da memória sem errar nenhuma carta.', icon: 'fa-brain' },
+        { id: 'speed_demon', title: 'Demônio da Velocidade', description: 'Complete um jogo em menos de 30 segundos.', icon: 'fa-bolt' },
+        { id: 'multiplayer_king', title: 'Rei do Multiplayer', description: 'Vença 10 partidas multiplayer.', icon: 'fa-crown' },
+        { id: 'genre_explorer', title: 'Explorador de Gêneros', description: 'Jogue em pelo menos 5 gêneros diferentes.', icon: 'fa-globe' },
+        { id: 'perfect_game', title: 'Jogo Perfeito', description: 'Acerte todas as músicas em um jogo no nível Difícil.', icon: 'fa-gem' },
+        { id: 'marathon_runner', title: 'Corredor de Maratona', description: 'Jogue 50 jogos no total.', icon: 'fa-running' }
     ];
     
     // Estado das Conquistas
     let unlockedAchievements = new Set();
     let hardModeStreak = 0;
     let correctlyAnsweredSongIds = new Set();
+    // Adicione estas variáveis para rastrear as novas conquistas
+    let gamesPlayed = 0;
+    let multiplayerWins = 0;
+    let playedGenres = new Set();
+    let perfectGames = 0;
 
 
     // Inicialização
@@ -165,25 +178,37 @@ document.addEventListener('DOMContentLoaded', function() {
         if (savedUnlocked) {
             unlockedAchievements = new Set(JSON.parse(savedUnlocked));
         }
-    
+
         hardModeStreak = parseInt(localStorage.getItem('hardModeStreak') || '0', 10);
-    
+        gamesPlayed = parseInt(localStorage.getItem('gamesPlayed') || '0', 10);
+        multiplayerWins = parseInt(localStorage.getItem('multiplayerWins') || '0', 10);
+        perfectGames = parseInt(localStorage.getItem('perfectGames') || '0', 10);
+
         const savedCorrectlyAnswered = localStorage.getItem('correctlyAnsweredSongIds');
         if (savedCorrectlyAnswered) {
             correctlyAnsweredSongIds = new Set(JSON.parse(savedCorrectlyAnswered));
         }
+
+        const savedPlayedGenres = localStorage.getItem('playedGenres');
+        if (savedPlayedGenres) {
+            playedGenres = new Set(JSON.parse(savedPlayedGenres));
+        }
     }
-    
+
     function saveAchievementProgress() {
         localStorage.setItem('unlockedAchievements', JSON.stringify([...unlockedAchievements]));
         localStorage.setItem('hardModeStreak', hardModeStreak);
+        localStorage.setItem('gamesPlayed', gamesPlayed);
+        localStorage.setItem('multiplayerWins', multiplayerWins);
+        localStorage.setItem('perfectGames', perfectGames);
         localStorage.setItem('correctlyAnsweredSongIds', JSON.stringify([...correctlyAnsweredSongIds]));
+        localStorage.setItem('playedGenres', JSON.stringify([...playedGenres]));
     }
 
     function checkAndUnlockAchievements() {
         achievements.forEach(ach => {
             if (unlockedAchievements.has(ach.id)) return;
-    
+
             let unlocked = false;
             switch (ach.id) {
                 case 'hard_streak_10':
@@ -200,8 +225,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 case 'collect_all':
                     if (correctlyAnsweredSongIds.size >= musicData.length) unlocked = true;
                     break;
+                // NOVAS CONQUISTAS
+                case 'first_win':
+                    if (gamesPlayed > 0) unlocked = true;
+                    break;
+                case 'memory_master':
+                    // Esta conquista será desbloqueada na função endMemoryGame
+                    break;
+                case 'speed_demon':
+                    if (timeLeft && (levelConfig[currentLevel].time - timeLeft) < 30) {
+                        unlocked = true;
+                    }
+                    break;
+                case 'multiplayer_king':
+                    if (multiplayerWins >= 10) unlocked = true;
+                    break;
+                case 'genre_explorer':
+                    if (playedGenres.size >= 5) unlocked = true;
+                    break;
+                case 'perfect_game':
+                    if (perfectGames > 0) unlocked = true;
+                    break;
+                case 'marathon_runner':
+                    if (gamesPlayed >= 50) unlocked = true;
+                    break;
             }
-    
+
             if (unlocked) {
                 unlockedAchievements.add(ach.id);
                 showAchievementNotification(ach);
@@ -435,12 +484,27 @@ function resetMatchState() {
             });
         }
 
-        if (currentLevel === 'hard') {
-            if (correctCount === totalPairs) {
-                hardModeStreak++;
-            } else {
-                hardModeStreak = 0; // A sequência é reiniciada se o jogador não acertar tudo no modo Difícil.
+        // Atualizar estatísticas para conquistas
+        gamesPlayed++;
+        
+        // Registrar gêneros jogados
+        selectedGenres.forEach(genre => {
+            if (genre !== 'all') {
+                playedGenres.add(genre);
             }
+        });
+        
+        // Verificar se foi um jogo perfeito no nível difícil
+        if (currentLevel === 'hard' && correctCount === totalPairs) {
+            perfectGames++;
+            hardModeStreak++;
+        } else if (currentLevel === 'hard') {
+            hardModeStreak = 0;
+        }
+        
+        // Verificar conquista de velocidade
+        if (timeLeft && (levelConfig[currentLevel].time - timeLeft) < 30) {
+            checkAndUnlockAchievements();
         }
         
         checkAndUnlockAchievements();
@@ -1159,9 +1223,11 @@ function resetMatchState() {
         if (playerScores[1] > playerScores[2]) {
             winnerText = 'Jogador 1 Venceu! 🎉';
             winnerAnnouncement.className = 'text-xl text-center mb-6 p-4 rounded-lg bg-teal-500/20 text-teal-300';
+            multiplayerWins++;
         } else if (playerScores[2] > playerScores[1]) {
             winnerText = 'Jogador 2 Venceu! 🎉';
             winnerAnnouncement.className = 'text-xl text-center mb-6 p-4 rounded-lg bg-orange-500/20 text-orange-300';
+            multiplayerWins++;
         } else {
             winnerText = 'Empate! 🤝';
             winnerAnnouncement.className = 'text-xl text-center mb-6 p-4 rounded-lg bg-gray-500/20 text-gray-300';
@@ -1172,6 +1238,9 @@ function resetMatchState() {
         setTimeout(() => {
             multiplayerResultsModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
         }, 10);
+        
+        saveAchievementProgress();
+        checkAndUnlockAchievements();
     }
 
     function shareResult() {
@@ -1380,6 +1449,13 @@ function resetMatchState() {
         const movePenalty = moves * 10;
         const baseScore = memoryLevelConfig[currentLevel].pairs * 100;
         const finalScore = Math.max(10, baseScore + timeBonus - movePenalty);
+
+        // Verificar se foi um jogo da memória perfeito (sem erros)
+        const perfectMemoryGame = moves === memoryLevelConfig[currentLevel].pairs;
+        if (perfectMemoryGame && !unlockedAchievements.has('memory_master')) {
+            unlockedAchievements.add('memory_master');
+            showAchievementNotification(achievements.find(ach => ach.id === 'memory_master'));
+        }
     
         if (isMultiplayer) {
             playerScores[currentPlayer] = finalScore;
@@ -1432,6 +1508,15 @@ function resetMatchState() {
 
     function displayAchievements() {
         achievementsList.innerHTML = '';
+        
+        // Adicionar botão de reset no topo
+        const resetButton = document.createElement('button');
+        resetButton.className = 'w-full bg-red-600 hover:bg-red-700 py-3 rounded-lg font-semibold mb-6 transition-colors flex items-center justify-center';
+        resetButton.innerHTML = '<i class="fas fa-trash-alt mr-2"></i>Resetar Todas as Conquistas';
+        resetButton.addEventListener('click', resetAchievements);
+        achievementsList.appendChild(resetButton);
+        
+        // Adicionar as conquistas
         achievements.forEach(ach => {
             const isUnlocked = unlockedAchievements.has(ach.id);
             const card = document.createElement('div');
@@ -1439,12 +1524,102 @@ function resetMatchState() {
             
             card.innerHTML = `
                 <i class="fas ${ach.icon} fa-3x ${isUnlocked ? 'text-yellow-400' : 'text-gray-500'} mr-4"></i>
-                <div>
+                <div class="flex-1">
                     <h4 class="font-bold text-lg ${isUnlocked ? 'text-white' : 'text-gray-400'}">${ach.title}</h4>
                     <p class="text-sm ${isUnlocked ? 'text-gray-300' : 'text-gray-500'}">${ach.description}</p>
                 </div>
+                ${isUnlocked ? `<button class="reset-single-achievement ml-2 text-red-400 hover:text-red-300 p-2 rounded-full transition-colors" data-achievement="${ach.id}"><i class="fas fa-times"></i></button>` : ''}
             `;
             achievementsList.appendChild(card);
+            
+            // Adicionar evento para resetar conquista individual
+            if (isUnlocked) {
+                const resetBtn = card.querySelector('.reset-single-achievement');
+                resetBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    resetSingleAchievement(ach.id);
+                });
+            }
+        });
+    }
+
+    // Adicione esta função para resetar as conquistas
+    function resetAchievements() {
+        const confirmModal = document.createElement('div');
+        confirmModal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-50';
+        confirmModal.innerHTML = `
+            <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 p-6 shadow-2xl">
+                <h2 class="text-xl font-bold mb-4 text-red-300">Resetar Conquistas</h2>
+                <p class="mb-6">Tem certeza que deseja resetar TODAS as suas conquistas? Esta ação não pode ser desfeita e você perderá todo o seu progresso.</p>
+                <div class="flex gap-3">
+                    <button id="confirmCancelReset" class="flex-1 bg-gray-600 hover:bg-gray-700 py-2 rounded-lg font-medium transition-colors">
+                        Cancelar
+                    </button>
+                    <button id="confirmReset" class="flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg font-medium transition-colors">
+                        Resetar Tudo
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(confirmModal);
+        
+        document.getElementById('confirmReset').addEventListener('click', () => {
+            // Resetar todas as variáveis de progresso
+            unlockedAchievements.clear();
+            hardModeStreak = 0;
+            gamesPlayed = 0;
+            multiplayerWins = 0;
+            perfectGames = 0;
+            correctlyAnsweredSongIds.clear();
+            playedGenres.clear();
+            
+            // Salvar o estado resetado
+            saveAchievementProgress();
+            
+            // Recarregar a exibição das conquistas
+            displayAchievements();
+            
+            document.body.removeChild(confirmModal);
+            showCustomAlert('Todas as conquistas foram resetadas!');
+        });
+        
+        document.getElementById('confirmCancelReset').addEventListener('click', () => {
+            document.body.removeChild(confirmModal);
+        });
+    }
+
+    // Adicione esta função para resetar conquista individual
+    function resetSingleAchievement(achievementId) {
+        const confirmModal = document.createElement('div');
+        confirmModal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-50';
+        confirmModal.innerHTML = `
+            <div class="bg-gray-800 rounded-xl max-w-md w-full mx-4 p-6 shadow-2xl">
+                <h2 class="text-xl font-bold mb-4 text-red-300">Resetar Conquista</h2>
+                <p class="mb-6">Tem certeza que deseja resetar esta conquista? Você perderá o progresso relacionado a ela.</p>
+                <div class="flex gap-3">
+                    <button id="confirmCancelSingle" class="flex-1 bg-gray-600 hover:bg-gray-700 py-2 rounded-lg font-medium transition-colors">
+                        Cancelar
+                    </button>
+                    <button id="confirmResetSingle" class="flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg font-medium transition-colors">
+                        Resetar
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(confirmModal);
+        
+        document.getElementById('confirmResetSingle').addEventListener('click', () => {
+            unlockedAchievements.delete(achievementId);
+            saveAchievementProgress();
+            displayAchievements();
+            document.body.removeChild(confirmModal);
+            showCustomAlert('Conquista resetada!');
+        });
+        
+        document.getElementById('confirmCancelSingle').addEventListener('click', () => {
+            document.body.removeChild(confirmModal);
         });
     }
 });
