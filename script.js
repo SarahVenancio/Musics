@@ -128,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function() {
         hard: { pairs: 8, grid: 'grid-cols-4', time: 120 }   // 16 cards
     };
 
-    let multiplayerGameData = []; // Armazena as músicas/cartas do jogo multiplayer
 
     // Definições de Conquistas
     const achievements = [
@@ -382,7 +381,6 @@ function resetMatchState() {
     score = 0;
     playerScores = { 1: 0, 2: 0 };
     currentPlayer = 1;
-    multiplayerGameData = [];
     scoreElement.textContent = '0';
 }
 
@@ -400,20 +398,11 @@ function resetMatchState() {
 
         hideElement(levelSelection, () => showElement(gameArea));
         
-        let selectedData;
-        if (isMultiplayer && currentPlayer === 2) {
-            selectedData = multiplayerGameData; // Usa as mesmas músicas para o Jogador 2
-        } else {
-            // Turno do Jogador 1 ou modo de um jogador
-            if (availableSongs.length < levelConfig[currentLevel].count) {
-                showGameBeatenModal();
-                return;
-            }
-            selectedData = shuffleArray([...availableSongs]).slice(0, levelConfig[currentLevel].count);
-            if (isMultiplayer) {
-                multiplayerGameData = selectedData; // Salva as músicas para o próximo jogador
-            }
+    if (availableSongs.length < levelConfig[currentLevel].count) {
+        showGameBeatenModal();
+        return;
         }
+    const selectedData = shuffleArray([...availableSongs]).slice(0, levelConfig[currentLevel].count);
         
         if (selectedData.length === 0) {
             showCustomAlert('Nenhuma música encontrada para os gêneros selecionados. Por favor, escolha outros gêneros.');
@@ -1311,17 +1300,19 @@ function resetMatchState() {
         resetMemoryGame(false);
 
         const config = memoryLevelConfig[currentLevel];
-        let selectedData;
+        const filteredData = musicData.filter(item => selectedGenres.includes('all') || selectedGenres.includes(item.genre));
+        
+        let availableSongs = filteredData.filter(song => !playedSongIds.has(song.id));
 
-        if (isMultiplayer && currentPlayer === 2) {
-            selectedData = multiplayerGameData;
-        } else {
-            const filteredData = musicData.filter(item => selectedGenres.includes('all') || selectedGenres.includes(item.genre));
-            selectedData = shuffleArray([...filteredData]).slice(0, config.pairs);
-            if (isMultiplayer) {
-                multiplayerGameData = selectedData;
-            }
+        if (availableSongs.length < config.pairs) {
+            showCustomAlert('Não há músicas suficientes para este nível com os filtros selecionados. Tente outros filtros.');
+            hideElement(memoryGameArea, () => showElement(levelSelection));
+            return;
         }
+
+        const selectedData = shuffleArray([...availableSongs]).slice(0, config.pairs);
+
+        selectedData.forEach(song => playedSongIds.add(song.id));
 
         if (selectedData.length < config.pairs) {
             showCustomAlert('Não há músicas suficientes para este nível com os filtros selecionados. Tente outros filtros.');
