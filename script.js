@@ -402,7 +402,27 @@ function resetMatchState() {
         showGameBeatenModal();
         return;
         }
-    const selectedData = shuffleArray([...availableSongs]).slice(0, levelConfig[currentLevel].count);
+        
+        const selectedArtists = new Set();
+        const selectedData = [];
+        const shuffledSongs = shuffleArray([...availableSongs]);
+
+        for (const song of shuffledSongs) {
+            if (selectedData.length >= levelConfig[currentLevel].count) {
+                break;
+            }
+            if (!selectedArtists.has(song.artist)) {
+                selectedData.push(song);
+                selectedArtists.add(song.artist);
+            }
+        }
+
+        if (selectedData.length < levelConfig[currentLevel].count) {
+            showCustomAlert('Não há músicas suficientes com artistas únicos para este nível. Tente um nível mais fácil ou altere os filtros de gênero.');
+            hideElement(gameArea);
+            showElement(levelSelection);
+            return;
+        }
         
         if (selectedData.length === 0) {
             showCustomAlert('Nenhuma música encontrada para os gêneros selecionados. Por favor, escolha outros gêneros.');
@@ -1347,13 +1367,18 @@ function resetMatchState() {
         card.className = 'memory-card';
         card.dataset.pairId = cardData.pairId;
 
+        const iconHtml = cardData.type === 'artist' 
+            ? '<i class="fas fa-microphone-alt text-lg md:text-xl text-purple-300"></i>' 
+            : '<i class="fas fa-music text-lg md:text-xl text-blue-300"></i>';
+
         card.innerHTML = `
             <div class="memory-card-inner">
                 <div class="memory-card-back">
-                    <i class="fas fa-music text-3xl md:text-4xl"></i>
+                    <i class="fas fa-question text-3xl md:text-4xl"></i>
                 </div>
-                <div class="memory-card-front">
-                    <span class="text-xs text-center md:text-sm p-1">${cardData.value}</span>
+                <div class="memory-card-front flex flex-col items-center justify-center p-1">
+                    ${iconHtml}
+                    <span class="text-xs text-center md:text-sm mt-2">${cardData.value}</span>
                 </div>
             </div>
         `;
